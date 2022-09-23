@@ -23,11 +23,11 @@ public class FDW extends LinearOpMode{
         waitForStart();
         telemetry.addData("Status", "ClawStatus");
         telemetry.update();
-        robot.claw.setPosition(0);
+        //robot.claw.setPosition(0);
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.liftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.liftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 // stall motors
         robot.leftDrive.setTargetPosition(0);
         robot.rightDrive.setTargetPosition(0);
@@ -35,7 +35,7 @@ public class FDW extends LinearOpMode{
 
         robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.liftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //robot.liftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         while (!opModeIsActive());
 
@@ -49,19 +49,19 @@ public class FDW extends LinearOpMode{
         robot.driveTo(robot.convert(25 ), FORWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        robot.liftArm.setTargetPosition(70); // move arm down to drop item in claw 80 is drop to floor
-        robot.liftArm.setPower(1);
-        robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.liftArm.setTargetPosition(70); // move arm down to drop item in claw 80 is drop to floor
+        //robot.liftArm.setPower(1);
+        //robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sleep(2000);
 
-        robot.claw.setPosition(0.8); //claw open, position 0 is close
+        //robot.claw.setPosition(0.8); //claw open, position 0 is close
         sleep(1000);
         telemetry.addData("Status", "Open");
         telemetry.update();
 
-        robot.liftArm.setTargetPosition(0); // move arm down to drop item in claw 80 is drop to floor
-        robot.liftArm.setPower(1);
-        robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.liftArm.setTargetPosition(0); // move arm down to drop item in claw 80 is drop to floor
+        //robot.liftArm.setPower(1);
+        //robot.liftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         robot.driveTo(robot.convert(20), BACKWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
@@ -73,9 +73,9 @@ public class FDW extends LinearOpMode{
         robot.driveTo(robot.convert(65), FORWARD); //drive backward towards the duck carosel
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        robot.spinner.setPower(0.5); //spinner for the duck
+        //robot.spinner.setPower(0.5); //spinner for the duck
         sleep(8000);
-        robot.spinner.setPower(0);// turn off spinner
+        //robot.spinner.setPower(0);// turn off spinner
 
         robot.driveTo(robot.convert(40), BACKWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
