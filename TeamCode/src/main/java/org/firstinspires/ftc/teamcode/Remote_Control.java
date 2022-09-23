@@ -57,7 +57,7 @@ public class Remote_Control extends LinearOpMode {
             else{
                 speedspin = 0;
             }
-            robot.spinner.setPower(speedspin);
+            //robot.spinner.setPower(speedspin);
 
 
             //double arm_angle = 0;
@@ -90,11 +90,11 @@ public class Remote_Control extends LinearOpMode {
             double downPower = Range.clip( gamepad1.right_trigger, -maxSpeed, maxSpeed);
             if(upPower > 0){
 
-                robot.liftArm.setPower(upPower);
+            //    robot.liftArm.setPower(upPower);
             } else if(downPower > 0){
-                robot.liftArm.setPower(-downPower);
+            //    robot.liftArm.setPower(-downPower);
             }else{
-                robot.liftArm.setPower(0);
+            //    robot.liftArm.setPower(0);
             }
             //robot.liftArm.setPower();///////////////////////
 
@@ -131,10 +131,10 @@ public class Remote_Control extends LinearOpMode {
                 i += 1;
             }
             if (clawOpen == true){
-                robot.claw.setPosition(0.8);
+            //    robot.claw.setPosition(0.8);
             }
             if (clawClose == true){
-                robot.claw.setPosition(-0.2);//this claw position
+            //    robot.claw.setPosition(-0.2);//this claw position
             }
 
 

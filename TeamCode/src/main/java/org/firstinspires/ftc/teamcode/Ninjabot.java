@@ -52,9 +52,9 @@ public class Ninjabot
 
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
-    public Servo claw     = null;
-    public DcMotor liftArm = null;
-    public DcMotor spinner = null;
+    //public Servo claw     = null;
+    //public DcMotor liftArm = null;
+    //public DcMotor spinner = null;
 
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
@@ -67,7 +67,8 @@ public class Ninjabot
     private static final int TANK_RIGHT= 8;
 
     public static final double WheelD = 3.533;
-
+    public static final int square = convert(24);
+    public static final int RIGHTANGLE = convert(24);
 
 
     BNO055IMU imu;
@@ -104,9 +105,9 @@ public class Ninjabot
 
         leftDrive = hwMap.get(DcMotor.class, "RD");
         rightDrive = hwMap.get(DcMotor.class, "LD");
-        claw = hwMap.get(Servo.class,"claw");
-        liftArm = hwMap.get(DcMotor.class, "arm");
-        spinner = hwMap.get(DcMotor.class, "spinner");
+        //claw = hwMap.get(Servo.class,"claw");
+        //liftArm = hwMap.get(DcMotor.class, "arm");
+        //spinner = hwMap.get(DcMotor.class, "spinner");
 
         rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
@@ -152,6 +153,7 @@ public class Ninjabot
         leftDrive.setPower(0);
         rightDrive.setPower(0);
     }
+
 
     public void turnTo(double degrees){
         Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
@@ -239,11 +241,32 @@ public class Ninjabot
         leftDrive.setPower(leftPower);
     }
 
-    public int convert(int inches) {
+    public static int convert(int inches) {
         // wheel circumferance / 360 = distance per degree        distanc / distance per degree
         double inchToDegrees = inches / (WheelD * 3.14159 / 360);
         return (int) inchToDegrees;
     }
+
+    //public void goToPole(int x1,int x2,int y1,int y2){
+    //    int deltaX = (x2 - x1)*square;
+    //    int deltaY = (y2 - y1)*square;
+//
+//        if (deltaX > 0){
+//            driveTo(deltaX, FORWARD);
+//        }
+//        else{
+//            deltaX = deltaX * (-1);
+//            driveTo(deltaX, BACKWARD);
+//        }
+//        if (deltaY > 0){
+//            driveTo(RIGHTANGLE , ROTATE_RIGHT);
+//        }
+//        else{
+//            deltaY = deltaY * (-1);
+//            driveTo(RIGHTANGLE , ROTATE_LEFT);
+//        }
+
+//    }
 
     public void driveTo(int distance, int dir) {
         if (dir == FORWARD) {
@@ -255,12 +278,12 @@ public class Ninjabot
             rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
         }   // to reversing
         else if (dir == ROTATE_LEFT) {
-            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + distance);
-            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() - distance);
-        }     // to rotate the left wheels
-        else if (dir == ROTATE_RIGHT) {
             leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - distance);
             rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
+        }     // to rotate the left wheels
+        else if (dir == ROTATE_RIGHT) {
+            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + distance);
+            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() - distance);
         }     // to rotate the right wheels
         else if (dir == TANK_LEFT) {
             rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);

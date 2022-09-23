@@ -23,11 +23,11 @@ public class Testing extends LinearOpMode {
         waitForStart();
         telemetry.addData("Status", "ClawStatus");
         telemetry.update();
-        robot.claw.setPosition(0);
+        //robot.claw.setPosition(0);
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.liftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.liftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 // stall motors
         robot.leftDrive.setTargetPosition(0);
         robot.rightDrive.setTargetPosition(0);
@@ -35,7 +35,7 @@ public class Testing extends LinearOpMode {
 
         robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.liftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //robot.liftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         robot.leftDrive.setPower(0.4);
         robot.rightDrive.setPower(0.4);
@@ -49,10 +49,6 @@ public class Testing extends LinearOpMode {
 
         robot.driveTo(robot.convert(50), FORWARD); //drive backward towards the duck carosel
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-
-        robot.spinner.setPower(0.5); //spinner for the duck
-        sleep(2000);
-        robot.spinner.setPower(0);// turn off spinner
 
         robot.leftDrive.setPower(50);
         sleep(2000);
