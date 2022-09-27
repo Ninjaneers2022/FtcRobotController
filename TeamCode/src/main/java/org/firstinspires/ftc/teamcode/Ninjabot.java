@@ -28,6 +28,7 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -42,6 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import android.graphics.drawable.GradientDrawable;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -71,8 +73,6 @@ public class Ninjabot
     public static final int RIGHTANGLE = convert(24);
 
 
-    BNO055IMU imu;
-
     static final int REV_ROBOTICS_HDHEX_MOTOR   = 28; // ticks per rotation
     static final int REV_ROBOTICS_HDHEX_20_to_1 = REV_ROBOTICS_HDHEX_MOTOR * 20;
 
@@ -87,6 +87,8 @@ public class Ninjabot
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     LinearOpMode control        =  null;
+    BNO055IMU gyro;
+
     public Orientation gyroLastAngle = null;
     private ElapsedTime period  = new ElapsedTime();
     static final double     P_DRIVE_COEFF           = 0.0125;
@@ -109,20 +111,35 @@ public class Ninjabot
         //liftArm = hwMap.get(DcMotor.class, "arm");
         //spinner = hwMap.get(DcMotor.class, "spinner");
 
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        //parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        //parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        gyro = hwMap.get(BNO055IMU.class, "imu");
+        gyro.initialize(parameters);
+
+
         rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
 
-        imu = hwMap.get( BNO055IMU.class, "imu");
         gyroLastAngle = new Orientation();
         //gyroGlobalAngle = 0.0;
     }
     public void resetAngle(){
-        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+        lastAngles = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+    }
+
+    public double getHeading(){
+        return gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES).firstAngle;
     }
 
     public double getAngle() {
 
-        Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+        Orientation orientation = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
 
         double deltaAngle = orientation.firstAngle - lastAngles.firstAngle;
 
@@ -156,7 +173,7 @@ public class Ninjabot
 
 
     public void turnTo(double degrees){
-        Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+        Orientation orientation = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
 
         double error = degrees - orientation.firstAngle;
 
@@ -218,7 +235,7 @@ public class Ninjabot
         //while (robotError > 180)  robotError -= 360;
         //while (robotError <= -180) robotError += 360;
         Orientation angles =
-                imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
+                gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
                         AngleUnit.DEGREES);
 
         double deltaAngle = angles.firstAngle - gyroLastAngle.firstAngle;
@@ -246,27 +263,6 @@ public class Ninjabot
         double inchToDegrees = inches / (WheelD * 3.14159 / 360);
         return (int) inchToDegrees;
     }
-
-    //public void goToPole(int x1,int x2,int y1,int y2){
-    //    int deltaX = (x2 - x1)*square;
-    //    int deltaY = (y2 - y1)*square;
-//
-//        if (deltaX > 0){
-//            driveTo(deltaX, FORWARD);
-//        }
-//        else{
-//            deltaX = deltaX * (-1);
-//            driveTo(deltaX, BACKWARD);
-//        }
-//        if (deltaY > 0){
-//            driveTo(RIGHTANGLE , ROTATE_RIGHT);
-//        }
-//        else{
-//            deltaY = deltaY * (-1);
-//            driveTo(RIGHTANGLE , ROTATE_LEFT);
-//        }
-
-//    }
 
     public void driveTo(int distance, int dir) {
         if (dir == FORWARD) {
@@ -304,4 +300,7 @@ public class Ninjabot
         control.telemetry.addData("rightDrive", rightDrive.getTargetPosition() - rightDrive.getCurrentPosition());
         control.telemetry.update();
     }
+
+    //gyro code here
+
 }

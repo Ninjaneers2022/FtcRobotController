@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 
 @Autonomous
 public class Testing extends LinearOpMode {
@@ -11,6 +12,12 @@ public class Testing extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Ninjabot(hardwareMap, this);
+        GyroSensor gyro;
+        gyro = hardwareMap.gyroSensor.get("gyro");
+        telemetry.addData("Mode", "starting gyro calibration...please wait");
+        telemetry.update();
+
+        gyro.calibrate();
 
         int FORWARD = 1;
         int BACKWARD = 3;

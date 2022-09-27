@@ -19,8 +19,8 @@ public class Remote_Control extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
         runtime.reset();
@@ -113,8 +113,8 @@ public class Remote_Control extends LinearOpMode {
                 minSpeed = 0;
             }
 
-            leftPower   = Range.clip(yAxis - xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
-            rightPower  = Range.clip(yAxis + xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
+            leftPower   = Range.clip(yAxis + xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
+            rightPower  = Range.clip(yAxis - xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
 
             //joysticks
             robot.leftDrive.setPower(leftPower);
