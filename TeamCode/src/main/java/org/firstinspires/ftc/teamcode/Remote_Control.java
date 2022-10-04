@@ -21,6 +21,7 @@ public class Remote_Control extends LinearOpMode {
 
         robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
         runtime.reset();
@@ -34,12 +35,14 @@ public class Remote_Control extends LinearOpMode {
             //buttons and game pad on remote
             float yAxis = -gamepad1.left_stick_y;
             float xAxis = gamepad1.left_stick_x;
-            boolean boost = gamepad1.a;
-            boolean slow = gamepad1.y;
+            boolean boost = gamepad1.dpad_up;
+            boolean slow = gamepad1.dpad_down;
+            boolean lift = gamepad1.y;
+            boolean lower = gamepad1.a;
             boolean clawClose = gamepad1.b;
             boolean clawOpen = gamepad1.x;
-            boolean optiArm = gamepad1.left_bumper;
-            boolean stopArm = gamepad1.right_bumper;
+            //boolean optiArm = gamepad1.left_bumper;
+            //boolean stopArm = gamepad1.right_bumper;
 
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
             double maxSpeed = 0.6;
@@ -126,19 +129,35 @@ public class Remote_Control extends LinearOpMode {
 
             int i = 0;
             //buttons
-            //making the robot face the cardinal directions of the board when buttons pressed
-            if (optiArm == true) {
-                i += 1;
+            if (lift == true){
+                robot.liftMotor.setPower(0.7);
             }
-            if (clawOpen == true){
-            //    robot.claw.setPosition(0.8);
-            }
-            if (clawClose == true){
-            //    robot.claw.setPosition(-0.2);//this claw position
+            if (lower == true){
+                robot.liftMotor.setPower(-0.8);
             }
 
+            if (lift == false && lower == false){
+                robot.liftMotor.setPower(0);
+            }
+            if (clawOpen == true){
+                robot.claw.setPosition(40);
+            }
+            if (clawClose == true){
+                robot.claw.setPosition(50);
+            }
+
+
+            //making the robot face the cardinal directions of the board when buttons pressed
+            //if (optiArm == true) {
+            //    i += 1;
+            //}
+            //if (clawOpen == true){
+            //    robot.claw.setPosition(0.8);
+            //}
+            //if (clawClose == true){
+            //    robot.claw.setPosition(-0.2);//this claw position
+            }
 
             sleep(10);
         }
     }
-}
