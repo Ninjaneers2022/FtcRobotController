@@ -19,8 +19,9 @@ public class Remote_Control extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
         runtime.reset();
@@ -34,12 +35,14 @@ public class Remote_Control extends LinearOpMode {
             //buttons and game pad on remote
             float yAxis = -gamepad1.left_stick_y;
             float xAxis = gamepad1.left_stick_x;
-            boolean boost = gamepad1.a;
-            boolean slow = gamepad1.y;
+            boolean boost = gamepad1.dpad_up;
+            boolean slow = gamepad1.dpad_down;
+            boolean lift = gamepad1.y;
+            boolean lower = gamepad1.a;
             boolean clawClose = gamepad1.b;
             boolean clawOpen = gamepad1.x;
-            boolean optiArm = gamepad1.left_bumper;
-            boolean stopArm = gamepad1.right_bumper;
+            //boolean optiArm = gamepad1.left_bumper;
+            //boolean stopArm = gamepad1.right_bumper;
 
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
             double maxSpeed = 0.6;
@@ -57,7 +60,7 @@ public class Remote_Control extends LinearOpMode {
             else{
                 speedspin = 0;
             }
-            robot.spinner.setPower(speedspin);
+            //robot.spinner.setPower(speedspin);
 
 
             //double arm_angle = 0;
@@ -90,11 +93,11 @@ public class Remote_Control extends LinearOpMode {
             double downPower = Range.clip( gamepad1.right_trigger, -maxSpeed, maxSpeed);
             if(upPower > 0){
 
-                robot.liftArm.setPower(upPower);
+            //    robot.liftArm.setPower(upPower);
             } else if(downPower > 0){
-                robot.liftArm.setPower(-downPower);
+            //    robot.liftArm.setPower(-downPower);
             }else{
-                robot.liftArm.setPower(0);
+            //    robot.liftArm.setPower(0);
             }
             //robot.liftArm.setPower();///////////////////////
 
@@ -113,8 +116,8 @@ public class Remote_Control extends LinearOpMode {
                 minSpeed = 0;
             }
 
-            leftPower   = Range.clip(yAxis - xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
-            rightPower  = Range.clip(yAxis + xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
+            leftPower   = Range.clip(yAxis + xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
+            rightPower  = Range.clip(yAxis - xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
 
             //joysticks
             robot.leftDrive.setPower(leftPower);
@@ -126,19 +129,35 @@ public class Remote_Control extends LinearOpMode {
 
             int i = 0;
             //buttons
-            //making the robot face the cardinal directions of the board when buttons pressed
-            if (optiArm == true) {
-                i += 1;
+            if (lift == true){
+                robot.liftMotor.setPower(0.7);
             }
-            if (clawOpen == true){
-                robot.claw.setPosition(0.8);
-            }
-            if (clawClose == true){
-                robot.claw.setPosition(-0.2);//this claw position
+            if (lower == true){
+                robot.liftMotor.setPower(-0.8);
             }
 
+            if (lift == false && lower == false){
+                robot.liftMotor.setPower(0);
+            }
+            if (clawOpen == true){
+                robot.claw.setPosition(40);
+            }
+            if (clawClose == true){
+                robot.claw.setPosition(50);
+            }
+
+
+            //making the robot face the cardinal directions of the board when buttons pressed
+            //if (optiArm == true) {
+            //    i += 1;
+            //}
+            //if (clawOpen == true){
+            //    robot.claw.setPosition(0.8);
+            //}
+            //if (clawClose == true){
+            //    robot.claw.setPosition(-0.2);//this claw position
+            }
 
             sleep(10);
         }
     }
-}
