@@ -12,12 +12,12 @@ public class Testing extends SleeveDetermine {
     @Override
     public void runOpMode() {
         robot = new Ninjabot(hardwareMap, this);
-        GyroSensor gyro;
-        gyro = hardwareMap.gyroSensor.get("gyro");
+        //GyroSensor gyro;
+        //gyro = hardwareMap.gyroSensor.get("gyro");
         telemetry.addData("Mode", "starting gyro calibration...please wait");
         telemetry.update();
 
-        gyro.calibrate();
+        //gyro.calibrate();
 
         int FORWARD = 1;
         int BACKWARD = 3;
@@ -50,16 +50,20 @@ public class Testing extends SleeveDetermine {
 
         //Put moves here
 
-        robot.driveTo(550, ROTATE_LEFT); //950 is equal to a 180 degree turn of the robot in rotate turns
-        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-        sleep(1000);
+        //robot.driveTo(550, ROTATE_LEFT); //950 is equal to a 180 degree turn of the robot in rotate turns
+        //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+        //sleep(1000);
 
-        robot.driveTo(robot.convert(50), FORWARD); //drive backward towards the duck carosel
-        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+        //robot.driveTo(robot.convert(50), FORWARD); //drive backward towards the duck carosel
+        //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        robot.leftDrive.setPower(50);
-        sleep(2000);
-        robot.leftDrive.setPower(0);
+        //robot.leftDrive.setPower(50);
+        //sleep(2000);
+        //robot.leftDrive.setPower(0);
+
+        robot.claw.setPosition(50);
+        robot.claw.setPosition(40);
+        robot.claw.setPosition(50);
 
     }
 

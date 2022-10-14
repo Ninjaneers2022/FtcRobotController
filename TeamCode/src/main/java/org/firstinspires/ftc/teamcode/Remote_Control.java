@@ -45,7 +45,7 @@ public class Remote_Control extends LinearOpMode {
             //boolean stopArm = gamepad1.right_bumper;
 
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
-            double maxSpeed = 0.6;
+            double maxSpeed = 0.5;//0.6
             double BOOST = 0;
             double minSpeed = 0;
             boolean spinPower = false;
@@ -140,10 +140,10 @@ public class Remote_Control extends LinearOpMode {
                 robot.liftMotor.setPower(0);
             }
             if (clawOpen == true){
-                robot.claw.setPosition(40);
+                robot.claw.setPosition(30);//40, 25, 30
             }
             if (clawClose == true){
-                robot.claw.setPosition(50);
+                robot.claw.setPosition(40);
             }
 
 
