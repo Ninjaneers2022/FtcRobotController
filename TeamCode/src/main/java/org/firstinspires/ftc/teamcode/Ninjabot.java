@@ -33,9 +33,9 @@ public class Ninjabot
 
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
-    public Servo claw     = null;
-    public DcMotor liftMotor = null;
-    //public DcMotor spinner = null;
+    public Servo claw           = null;
+    public Servo wrist          = null;
+    public DcMotor liftMotor    = null;
 
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
@@ -71,7 +71,6 @@ public class Ninjabot
 
     //needed for color detection code
     OpenCvInternalCamera phoneCam;
-    SleeveDetermine.SleeveDeterminationPipeline pipeline;
 
     public Orientation gyroLastAngle = null;
     private ElapsedTime period  = new ElapsedTime();
@@ -92,14 +91,14 @@ public class Ninjabot
         leftDrive = hwMap.get(DcMotor.class, "RD");
         rightDrive = hwMap.get(DcMotor.class, "LD");
         claw = hwMap.get(Servo.class,"claw");
+        wrist = hwMap.get(Servo.class, "wrist");
         liftMotor = hwMap.get(DcMotor.class, "lift");
         //spinner = hwMap.get(DcMotor.class, "spinner");
 
         // needed for color detection code
         int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        pipeline = new SleeveDetermine.SleeveDeterminationPipeline();
-        phoneCam.setPipeline(pipeline);
+
 
         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
@@ -298,5 +297,13 @@ public class Ninjabot
     //color detection code here
 
     //gyro code here
+    public double gyroTurn(int speed, double bearing){
+        double startPosition = getHeading();
+        double desiredPosition = bearing;
+        //initial heading is zero
+        int degreesToTurn = Math.toIntExact((long) ((desiredPosition - startPosition)*(1100/360)));
+
+        return degreesToTurn;
+    }
 
 }

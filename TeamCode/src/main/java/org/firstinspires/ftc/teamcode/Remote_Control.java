@@ -4,6 +4,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -23,6 +24,8 @@ public class Remote_Control extends LinearOpMode {
         robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         robot.liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        int i = 0;
+
         waitForStart();
         runtime.reset();
 
@@ -41,8 +44,16 @@ public class Remote_Control extends LinearOpMode {
             boolean lower = gamepad1.a;
             boolean clawClose = gamepad1.b;
             boolean clawOpen = gamepad1.x;
-            //boolean optiArm = gamepad1.left_bumper;
-            //boolean stopArm = gamepad1.right_bumper;
+            float wristOut = gamepad1.left_trigger;
+            float wristIn = gamepad1.right_trigger;
+            boolean up = gamepad1.dpad_up;
+            boolean down = gamepad1.dpad_down;
+            boolean left = gamepad1.dpad_left;
+            boolean right = gamepad1.dpad_right;
+
+            //gamepad2 input
+            boolean armUp = gamepad2.y;
+            boolean armDown = gamepad2.b;
 
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
             double maxSpeed = 0.5;//0.6
@@ -127,7 +138,6 @@ public class Remote_Control extends LinearOpMode {
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
 
-            int i = 0;
             //buttons
             if (lift == true){
                 robot.liftMotor.setPower(0.7);
@@ -145,6 +155,43 @@ public class Remote_Control extends LinearOpMode {
             if (clawClose == true){
                 robot.claw.setPosition(40);
             }
+            if (wristOut > 0.3){
+                robot.wrist.setDirection(Servo.Direction.REVERSE);
+                robot.wrist.setPosition(0.3);
+            }
+            if (wristIn > 0.3){
+                robot.wrist.setDirection(Servo.Direction.REVERSE);
+                robot.wrist.setPosition(0.9);
+            }
+            if (wristIn < 0.3 && wristOut < 0.3){
+                double display = robot.wrist.getPosition();
+                telemetry.addData("sevo", display);
+                telemetry.update();
+            }
+            if (up){
+                robot.gyroTurn(50, -90);
+            }
+            if (down){
+                robot.gyroTurn(50, 90);
+            }
+            if (left){
+                robot.gyroTurn(50, 0);
+            }
+            if (right){
+                robot.gyroTurn(50, 180);
+            }
+            if (armUp) {
+                i += 1;
+            }
+            if (armDown) {
+                i -= 1;
+            }
+            int multiplyer = 30;
+            Range.clip(i, 0, 3);
+            while (robot.liftMotor.getCurrentPosition() != i * multiplyer) {
+                double difference = robot.liftMotor.getCurrentPosition() - i * multiplyer;
+                robot.liftMotor.setPower(difference);
+            }
 
 
             //making the robot face the cardinal directions of the board when buttons pressed
@@ -160,4 +207,6 @@ public class Remote_Control extends LinearOpMode {
 
             sleep(10);
         }
+
+
     }
