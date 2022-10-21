@@ -1,31 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -42,8 +15,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.opencv.core.Scalar;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import android.graphics.drawable.GradientDrawable;
@@ -58,9 +33,9 @@ public class Ninjabot
 
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
-    public Servo claw     = null;
-    public DcMotor liftMotor = null;
-    //public DcMotor spinner = null;
+    public Servo claw           = null;
+    public Servo wrist          = null;
+    public DcMotor liftMotor    = null;
 
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
@@ -87,6 +62,7 @@ public class Ninjabot
     static final int REV_ROBOTICS_COREHEX_72_to_1 = REV_ROBOTICS_COREHEX_MOTOR * 72;
     static final int LiftCounts                    = REV_ROBOTICS_COREHEX_72_to_1;
 
+    static final Scalar BLUE = new Scalar(0, 0, 255);
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -95,13 +71,14 @@ public class Ninjabot
 
     //needed for color detection code
     OpenCvInternalCamera phoneCam;
-    SleeveDetermine.SleeveDeterminationPipeline pipeline;
 
     public Orientation gyroLastAngle = null;
     private ElapsedTime period  = new ElapsedTime();
     static final double     P_DRIVE_COEFF           = 0.0125;
 
     /* Constructor */
+    public SleeveDetermine sleeveNumber = null;
+
     public Ninjabot(HardwareMap map, LinearOpMode ctrl ){
         init(map, ctrl);
     }
@@ -112,18 +89,19 @@ public class Ninjabot
         // Save reference to Hardware map
         hwMap   = ahwMap;
         control = ctrl;
+        sleeveNumber = new SleeveDetermine();
 
         leftDrive = hwMap.get(DcMotor.class, "RD");
         rightDrive = hwMap.get(DcMotor.class, "LD");
         claw = hwMap.get(Servo.class,"claw");
+        wrist = hwMap.get(Servo.class, "wrist");
         liftMotor = hwMap.get(DcMotor.class, "lift");
         //spinner = hwMap.get(DcMotor.class, "spinner");
 
         // needed for color detection code
         int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        pipeline = new SleeveDetermine.SleeveDeterminationPipeline();
-        phoneCam.setPipeline(pipeline);
+
 
         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
@@ -145,7 +123,11 @@ public class Ninjabot
 
         gyroLastAngle = new Orientation();
         //gyroGlobalAngle = 0.0;
+        sleeveNumber.initialize(hwMap, ctrl);
+
+        int Originalposlift = liftMotor.getCurrentPosition();
     }
+
     public void resetAngle(){
         lastAngles = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
     }
@@ -204,6 +186,7 @@ public class Ninjabot
     }
 
     // as given
+
     public void gyroTurn(double speed, double angle){
         while (control.opModeIsActive() && !gyroOnHeading(speed, angle, 0.1)){
             control.telemetry.update();
@@ -321,5 +304,13 @@ public class Ninjabot
     //color detection code here
 
     //gyro code here
+    public double gyroTurn(int speed, double bearing){
+        double startPosition = getHeading();
+        double desiredPosition = bearing;
+        //initial heading is zero
+        int degreesToTurn = Math.toIntExact((long) ((desiredPosition - startPosition)*(1100/360)));
+
+        return degreesToTurn;
+    }
 
 }
