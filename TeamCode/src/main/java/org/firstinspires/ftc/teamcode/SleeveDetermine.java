@@ -23,6 +23,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -39,23 +41,19 @@ import org.openftc.easyopencv.OpenCvPipeline;
 /*
  * This sample demonstrates a basic sleeve position
  */
-//@TeleOp
-@Autonomous
-public class VisionAuto extends LinearOpMode {
-    Ninjabot robot;
+
+public class SleeveDetermine {
+
     OpenCvInternalCamera phoneCam;
     SleeveDeterminationPipeline pipeline;
 
-    @Override
-    public void runOpMode() {
-        robot = new Ninjabot(hardwareMap, this);
+    LinearOpMode control = null;
 
-        int FORWARD = 1;
-        int BACKWARD = 3;
-        int ROTATE_LEFT = 5;
-        int ROTATE_RIGHT = 6;
-        int TANK_LEFT = 7;
-        int TANK_RIGHT = 8;
+    public boolean initialize(HardwareMap hwMap, LinearOpMode ctrl)
+    // public boolean initialize
+    {
+        control = ctrl;
+
         /**
          * NOTE: Many comments have been omitted from this sample for the
          * sake of conciseness. If you're just starting out with EasyOpenCv,
@@ -63,7 +61,7 @@ public class VisionAuto extends LinearOpMode {
          * webcam counterpart, {@link WebcamExample} first.
          */
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         pipeline = new SleeveDeterminationPipeline();
         phoneCam.setPipeline(pipeline);
@@ -71,6 +69,7 @@ public class VisionAuto extends LinearOpMode {
         // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
         // out when the RC activity is in portrait. We do our actual image processing assuming
         // landscape orientation, though.
+
         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
         phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -82,45 +81,49 @@ public class VisionAuto extends LinearOpMode {
             @Override
             public void onError(int errorCode) {
                 /*
-                 * This will be called if the camera could not be opened
+                 * This will be called if the camera could not be opened (set and return false)
                  */
             }
         });
 
+        return (true);
+    }
 
-        while (!opModeIsActive() && !isStopRequested()) {
+    public int ColourAvg() {
+        int colavg = pipeline.Avg1();
+        return  colavg ;
 
-            telemetry.addData("AVG1", pipeline.Avg1());
+    }
 
-            telemetry.update();
+    public int Position() {
+        int colavg = pipeline.Avg1();
+        //green = 120-125
+        //red = 115-118
+        //blue = 145-150
 
-        }
-        waitForStart();
+        //switch (colavg){
+        // case ((colavg >100) && (colavg<118)):
+        // return 1;
+        // case ((colavg >119) && (colavg<125)):
+        // return 2;
+        // case ((colavg >145) && (colavg<150)):
+        // return 3;
+        // default:
+        // return 0;
+        // }
 
-        int sleeve = pipeline.Avg1();
-        sleep(50);
+        if ((colavg >100) && (colavg<118))
+        { return 1; }
+        if ((colavg >119) && (colavg<125))
+        { return 2; }
+        if ((colavg >145) && (colavg<150))
+        { return 3; }
 
-        if (sleeve <= 150) {
-            robot.driveTo(550, ROTATE_LEFT); //950 is equal to a 180 degree turn of the robot in rotate turns
-            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-        }
-        else {
-            robot.driveTo(550, ROTATE_RIGHT); //950 is equal to a 180 degree turn of the robot in rotate turns
-            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-        }
-
+        return 0;
     }
 
 
     public static class SleeveDeterminationPipeline extends OpenCvPipeline {
-        /*
-         * An enum to define the sleeve position
-         */
-        public enum SleevePos {
-            ONE,
-            TWO,
-            THREE
-        }
 
         /*
          * Some color constants
@@ -134,7 +137,7 @@ public class VisionAuto extends LinearOpMode {
         static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(109, 98);
 
         static final int REGION_WIDTH = 80;
-        static final int REGION_HEIGHT = 40;
+        static final int REGION_HEIGHT = 80;
 
         /*
          * Points which actually define the sample region rectangles, derived from above values
@@ -169,8 +172,6 @@ public class VisionAuto extends LinearOpMode {
         Mat Cb = new Mat();
         int avg1, avg2, avg3;
 
-        // Volatile since accessed by OpMode thread w/o synchronization
-        private volatile SleevePos position = SleevePos.ONE;
 
         /*
          * This function takes the RGB frame, converts to YCrCb,
@@ -178,10 +179,7 @@ public class VisionAuto extends LinearOpMode {
          */
         void inputToCb(Mat input) {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-            //Imgproc.cvtColor(input,YCrCb, Imgproc.COLOR_BGR2HSV );
             Core.extractChannel(YCrCb, Cb, 2);
-
-
         }
 
         @Override
@@ -206,71 +204,56 @@ public class VisionAuto extends LinearOpMode {
 
         }
 
-        /*
-        private Mat ycrcbMat       = new Mat();
-        private Mat binaryMat      = new Mat();
-        private Mat maskedInputMat = new Mat();
-
-        public Scalar lower = new Scalar(94, 80, 2);
-        public Scalar upper = new Scalar(126, 255, 255);
-
-        public Scalar lgreen = new Scalar(25, 52, 72);
-        public Scalar hgreen = new Scalar(102, 255, 255);
-        */
 
         @Override
         public Mat processFrame(Mat input) {
             /*
+             * Overview of what we're doing:
+             *
+             * We first convert to YCrCb color space, from RGB color space.
+             * Why do we do this? Well, in the RGB color space, chroma and
+             * luma are intertwined. In YCrCb, chroma and luma are separated.
+             * YCrCb is a 3-channel color space, just like RGB. YCrCb's 3 channels
+             * are Y, the luma channel (which essentially just a B&W image), the
+             * Cr channel, which records the difference from red, and the Cb channel,
+             * which records the difference from blue. Because chroma and luma are
+             * not related in YCrCb, vision code written to look for certain values
+             * in the Cr/Cb channels will not be severely affected by differing
+             * light intensity, since that difference would most likely just be
+             * reflected in the Y channel.
+             *
+             * After we've converted to YCrCb, we extract just the 2nd channel, the
+             * Cb channel. We do this because stones are bright yellow and contrast
+             * STRONGLY on the Cb channel against everything else, including SkyStones
+             * (because SkyStones have a black label).
+             *
+             * We then take the average pixel value of our region on that Cb
+             * channel, one positioned over the sleeve. We measure the avg and compare to
+             * our known sleeve.
+             * We also draw a rectangle on the screen showing where the system is aiming
+             *
+
+             */
+
+            /*
              * Get the Cb channel of the input frame after conversion to YCrCb
              */
             inputToCb(input);
-            //original
             //Imgproc.cvtColor(input, ycrcbMat, Imgproc.COLOR_RGB2YCrCb);
 
-            //Core.inRange(ycrcbMat, lower, upper, binaryMat);
-
-            //original
-            //Core.inRange(ycrcbMat, lgreen, hgreen, binaryMat);
+            // Core.inRange(ycrcbMat, lower, upper, binaryMat);
 
 
-            //original
-            //maskedInputMat.release();
-
-            //original
-            //Core.bitwise_and(input, input, maskedInputMat, binaryMat);
-
-
-
-            /*
-             * Compute the average pixel value of each submat region. We're
-             * taking the average of a single channel buffer, so the value
-             * we need is at index 0. We could have also taken the average
-             * pixel value of the 3-channel image, and referenced the value
-             * at index 2 here.
-             */
             avg1 = (int) Core.mean(region1_Cb).val[0];
 
 
-            /*
-             * Draw a rectangle showing sample region 1 on the screen.
-             * Simply a visual aid. Serves no functional purpose.
-             */
             Imgproc.rectangle(
                     input, // Buffer to draw on
                     region1_pointA, // First point which defines the rectangle
                     region1_pointB, // Second point which defines the rectangle
                     BLUE, // The color the rectangle is drawn in
                     2);
-            /*Imgproc.rectangle(
-                    maskedInputMat, // Buffer to draw on
-                    region1_pointA, // First point which defines the rectangle
-                    region1_pointB, // Second point which defines the rectangle
-                    BLUE, // The color the rectangle is drawn in
-                    2); // Thickness of the rectangle lines
-             */
 
-
-            //return maskedInputMat;
 
 
 
@@ -287,12 +270,10 @@ public class VisionAuto extends LinearOpMode {
             return avg1;
         }
 
+        //green = 120-125
+        //red = 115-118
+        //blue = 145-150
 
-        /*
-         * Call this from the OpMode thread to obtain the latest analysis
-         */
-        public SleevePos getAnalysis() {
-            return position;
-        }
+
     }
 }

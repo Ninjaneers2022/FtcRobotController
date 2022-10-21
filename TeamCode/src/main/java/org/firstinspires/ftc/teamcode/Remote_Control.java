@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -14,6 +15,7 @@ public class Remote_Control extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
         Ninjabot robot;
         robot = new Ninjabot(hardwareMap, this);
 
@@ -31,7 +33,28 @@ public class Remote_Control extends LinearOpMode {
 
         ModernRoboticsI2cGyro gyro = null;
 
-        while (opModeIsActive()){
+        // get starting position of  robot.liftMotor
+        int Originalposlift = robot.liftMotor.getCurrentPosition();
+        int ClicksToTop = 100;
+        int ClicksToMed = 50;
+        int ClicksTolow = 20;
+        int ClicksToGround = 10;
+        int ToptargetPos = Originalposlift + ClicksToTop ;
+        int MedtargetPos = Originalposlift + ClicksToMed ;
+        int LowtargetPos = Originalposlift + ClicksTolow ;
+        int GroundtargetPos = Originalposlift + ClicksToGround ;
+
+
+        robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        // stall motors
+        robot.liftMotor.setTargetPosition(LowtargetPos);
+        robot.liftMotor.setPower(.5);
+        robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+
+
+        while (opModeIsActive()) {
             double leftPower;
             double rightPower;
 
@@ -59,76 +82,28 @@ public class Remote_Control extends LinearOpMode {
             double maxSpeed = 0.5;//0.6
             double BOOST = 0;
             double minSpeed = 0;
-            boolean spinPower = false;
-            double speedspin = 0;
-            spinPower = gamepad1.dpad_left;
-            if(spinPower == true){
-                speedspin = 1;
-            }
-            else if(gamepad1.dpad_right == true){
-                speedspin = -1;
-            }
-            else{
-                speedspin = 0;
-            }
-            //robot.spinner.setPower(speedspin);
 
 
-            //double arm_angle = 0;
-          // if(gamepad1.left_trigger == true){
-          //      arm_angle = 0.6;
-          //  }
-         //   else if(gamepad1.right_trigger == true){
-         //       arm_angle = -0.6;
-         //   }
-         //   else{
-        //        arm_angle = 0;
-         //   }
-
-         //   robot.liftArm.setPower(arm_angle);
+            double upPower = Range.clip(gamepad1.left_trigger, -maxSpeed, maxSpeed);
+            double downPower = Range.clip(gamepad1.right_trigger, -maxSpeed, maxSpeed);
 
 
-
-
-            //determining the power based on degree on angle on joystick
-            //if (medSpeed <= angle & angle <= -medSpeed){
-            //    maxSpeed = 0.8;
-            //}
-            //else if (lowSpeed <= angle & angle <= -lowSpeed){
-            //    maxSpeed = 0.6;
-            //}
-            //else{
-            //    maxSpeed = 0.4;
-            //}///////////////////////////////////////
-            double upPower = Range.clip( gamepad1.left_trigger , -maxSpeed, maxSpeed);
-            double downPower = Range.clip( gamepad1.right_trigger, -maxSpeed, maxSpeed);
-            if(upPower > 0){
-
-            //    robot.liftArm.setPower(upPower);
-            } else if(downPower > 0){
-            //    robot.liftArm.setPower(-downPower);
-            }else{
-            //    robot.liftArm.setPower(0);
-            }
-            //robot.liftArm.setPower();///////////////////////
-
-
-            //If A button pressed, boost power
+            //If gamepad1.dpad_up button pressed, boost power
             if (boost == true) {
                 BOOST = 1;
             } else {
                 BOOST = 0;
             }
 
-            //If Y button pressed, cull power
+            //If gamepad1.dpad_down button pressed, cull power
             if (slow == true) {
                 minSpeed = 0.3;
             } else {
                 minSpeed = 0;
             }
 
-            leftPower   = Range.clip(yAxis + xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
-            rightPower  = Range.clip(yAxis - xAxis, -maxSpeed-BOOST+minSpeed, maxSpeed+BOOST-minSpeed);
+            leftPower = Range.clip(yAxis + xAxis, -maxSpeed - BOOST + minSpeed, maxSpeed + BOOST - minSpeed);
+            rightPower = Range.clip(yAxis - xAxis, -maxSpeed - BOOST + minSpeed, maxSpeed + BOOST - minSpeed);
 
             //joysticks
             robot.leftDrive.setPower(leftPower);
@@ -139,45 +114,53 @@ public class Remote_Control extends LinearOpMode {
             telemetry.update();
 
             //buttons
-            if (lift == true){
-                robot.liftMotor.setPower(0.7);
-            }
-            if (lower == true){
-                robot.liftMotor.setPower(-0.8);
-            }
-
-            if (lift == false && lower == false){
+            if (lift == false && lower == false) {
                 robot.liftMotor.setPower(0);
+                telemetry.addData("none pressed", robot.liftMotor.getCurrentPosition());
             }
-            if (clawOpen == true){
-                robot.claw.setPosition(30);//40, 25, 30
-            }
-            if (clawClose == true){
-                robot.claw.setPosition(40);
-            }
-            if (wristOut > 0.3){
-                robot.wrist.setDirection(Servo.Direction.REVERSE);
-                robot.wrist.setPosition(0.3);
-            }
-            if (wristIn > 0.3){
-                robot.wrist.setDirection(Servo.Direction.REVERSE);
-                robot.wrist.setPosition(0.9);
-            }
-            if (wristIn < 0.3 && wristOut < 0.3){
-                double display = robot.wrist.getPosition();
-                telemetry.addData("sevo", display);
+            if (lift == true) {
+                robot.liftMotor.setPower(0.7);
+                telemetry.addData("y pressed", robot.liftMotor.getCurrentPosition());
                 telemetry.update();
             }
-            if (up){
+            if (lower == true) {
+                robot.liftMotor.setPower(-0.8);
+                telemetry.addData("a pressed", robot.liftMotor.getCurrentPosition());
+                telemetry.update();
+            }
+
+
+            if (clawOpen == true) {
+                robot.claw.setPosition(30);//40, 25, 30
+            }
+            if (clawClose == true) {
+                robot.claw.setPosition(40);
+            }
+
+            if (wristOut > 0.3) {
+                robot.wrist.setDirection(Servo.Direction.REVERSE);
+                robot.wrist.setPosition(0.4);
+            }
+            if (wristIn > 0.3) {
+                robot.wrist.setDirection(Servo.Direction.REVERSE);
+                robot.wrist.setPosition(0.8);
+            }
+            if (wristIn < 0.3 && wristOut < 0.3) {
+                double display = robot.wrist.getPosition();
+                // telemetry.addData("sevo", display);
+               // telemetry.update();
+            }
+
+            if (up) {
                 robot.gyroTurn(50, -90);
             }
-            if (down){
+            if (down) {
                 robot.gyroTurn(50, 90);
             }
-            if (left){
+            if (left) {
                 robot.gyroTurn(50, 0);
             }
-            if (right){
+            if (right) {
                 robot.gyroTurn(50, 180);
             }
             if (armUp) {
@@ -186,24 +169,10 @@ public class Remote_Control extends LinearOpMode {
             if (armDown) {
                 i -= 1;
             }
-            int multiplyer = 30;
-            Range.clip(i, 0, 3);
-            while (robot.liftMotor.getCurrentPosition() != i * multiplyer) {
-                double difference = robot.liftMotor.getCurrentPosition() - i * multiplyer;
-                robot.liftMotor.setPower(difference);
-            }
 
 
-            //making the robot face the cardinal directions of the board when buttons pressed
-            //if (optiArm == true) {
-            //    i += 1;
-            //}
-            //if (clawOpen == true){
-            //    robot.claw.setPosition(0.8);
-            //}
-            //if (clawClose == true){
-            //    robot.claw.setPosition(-0.2);//this claw position
-            }
+        }
+
 
             sleep(10);
         }
