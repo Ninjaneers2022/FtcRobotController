@@ -77,6 +77,8 @@ public class Ninjabot
     static final double     P_DRIVE_COEFF           = 0.0125;
 
     /* Constructor */
+    public SleeveDetermine sleeveNumber = null;
+
     public Ninjabot(HardwareMap map, LinearOpMode ctrl ){
         init(map, ctrl);
     }
@@ -87,6 +89,7 @@ public class Ninjabot
         // Save reference to Hardware map
         hwMap   = ahwMap;
         control = ctrl;
+        sleeveNumber = new SleeveDetermine();
 
         leftDrive = hwMap.get(DcMotor.class, "RD");
         rightDrive = hwMap.get(DcMotor.class, "LD");
@@ -120,7 +123,11 @@ public class Ninjabot
 
         gyroLastAngle = new Orientation();
         //gyroGlobalAngle = 0.0;
+        sleeveNumber.initialize(hwMap, ctrl);
+
+        int Originalposlift = liftMotor.getCurrentPosition();
     }
+
     public void resetAngle(){
         lastAngles = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
     }

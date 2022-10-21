@@ -78,7 +78,7 @@ public class AutoSignal2 extends LinearOpMode {
 
         //up
 
-        robot.liftMotor.setTargetPosition(robot.Originalposlift + 20);
+        robot.liftMotor.setTargetPosition(0 + 20);
         robot.liftMotor.setPower(.1);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -86,7 +86,7 @@ public class AutoSignal2 extends LinearOpMode {
         robot.wrist.setPosition(-0.25);
 
         // lower the lift arm
-        robot.liftMotor.setTargetPosition(robot.Originalposlift - 30);
+        robot.liftMotor.setTargetPosition(0 - 30);
         robot.liftMotor.setPower(-.1);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         //Open Claw slowly
@@ -95,7 +95,7 @@ public class AutoSignal2 extends LinearOpMode {
         robot.wrist.setPosition(-0.1);
 
         //raise lift arm
-        robot.liftMotor.setTargetPosition(robot.Originalposlift + 50);
+        robot.liftMotor.setTargetPosition(0 + 50);
         robot.liftMotor.setPower(.1);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
