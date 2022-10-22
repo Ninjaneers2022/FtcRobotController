@@ -131,10 +131,17 @@ public class Remote_Control extends LinearOpMode {
 
 
             if (clawOpen == true) {
-                robot.claw.setPosition(30);//40, 25, 30
+
+                double position = robot.claw.getPosition() - 0.05;
+                robot.claw.setPosition(position);
+                telemetry.addData("claw position open",position);
+                telemetry.update();
             }
             if (clawClose == true) {
-                robot.claw.setPosition(40);
+                double position = robot.claw.getPosition() + 0.05;
+                robot.claw.setPosition(position);
+                telemetry.addData("claw position close",position);
+                telemetry.update();
             }
 
             if (wristOut > 0.3) {

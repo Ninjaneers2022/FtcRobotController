@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
 public class Testing extends  LinearOpMode{
@@ -44,26 +45,49 @@ public class Testing extends  LinearOpMode{
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         //robot.liftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        robot.leftDrive.setPower(0.4);
-        robot.rightDrive.setPower(0.4);
 //set power for all wheels indefinitely
+        //robot.leftDrive.setPower(0.4);
+        //robot.rightDrive.setPower(0.4);
 
         //Put moves here
 
-        robot.driveTo(550, ROTATE_LEFT); //950 is equal to a 180 degree turn of the robot in rotate turns
-        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-        sleep(1000);
+        //robot.driveTo(550, ROTATE_LEFT); //950 is equal to a 180 degree turn of the robot in rotate turns
+        //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+        //sleep(1000);
 
-        robot.driveTo(robot.convert(50), FORWARD); //drive backward towards the duck carosel
-        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+        //robot.driveTo(robot.convert(50), FORWARD); //drive backward towards the duck carosel
+        //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        robot.leftDrive.setPower(50);
+        //robot.leftDrive.setPower(0.5);
+        //sleep(2000);
+        //robot.leftDrive.setPower(0);
+
+        //robot.claw.setPosition(0.5);
+        //robot.claw.setPosition(0.4);
+        //robot.claw.setPosition(0.5);
+
+
+        robot.wrist.setDirection(Servo.Direction.REVERSE);
+        robot.wrist.setPosition(0.8);
+        telemetry.addData("wrist", "In");
+        telemetry.update();
+
         sleep(2000);
-        robot.leftDrive.setPower(0);
 
-        robot.claw.setPosition(50);
-        robot.claw.setPosition(40);
-        robot.claw.setPosition(50);
+        robot.wrist.setPosition(0.4);
+        telemetry.addData("wrist", "Out");
+        telemetry.update();
+        sleep(2000);
+
+        robot.claw.setPosition(0);
+        telemetry.addData("claw", "0.3");
+        telemetry.update();
+        sleep(2000);
+
+        robot.claw.setPosition(1);
+        telemetry.addData("claw", "0.5");
+        telemetry.update();
+        sleep(2000);
 
     }
 

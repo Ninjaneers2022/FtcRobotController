@@ -25,6 +25,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import javax.tools.ForwardingFileObject;
+
 
 /*
  * This sample demonstrates a basic sleeve position
@@ -45,14 +47,15 @@ public class AutoSignal2 extends LinearOpMode {
         final int ROTATE_RIGHT = 6;
         final int TANK_LEFT= 7;
         final int TANK_RIGHT= 8;
+        final int clawOpen = 1;
         
       //  robot.gyroCalibrate();
 
-        //while (!opModeIsActive() && !isStopRequested()) {
+        while (!opModeIsActive() && !isStopRequested()) {
 
             telemetry.addData( "AVG1", robot.sleeveNumber.ColourAvg()  ); telemetry.update();
-
-      //  }
+            telemetry.update();
+        }
 		// Wait for the game to start
         waitForStart();
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -73,43 +76,60 @@ public class AutoSignal2 extends LinearOpMode {
         // Move arm to signal delivery position (out of webcam view) while driving forward
         // Dive forward X inches
 
-        robot.driveTo(550, FORWARD);
+
+
+        robot.driveTo(200, FORWARD); //was 550 was 250
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        //up
+        robot.driveTo(270, ROTATE_RIGHT);
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
+        robot.driveTo(100, FORWARD);
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+        //up
+        /*
         robot.liftMotor.setTargetPosition(0 + 20);
         robot.liftMotor.setPower(.1);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //move wrist 90 degrees .25
-        robot.wrist.setPosition(-0.25);
+         */
 
+        //move wrist 90 degrees 0.4 out
+        robot.wrist.setPosition(0.4);
+        sleep(2000);
+
+        robot.claw.setPosition(clawOpen);
         // lower the lift arm
+        /*
         robot.liftMotor.setTargetPosition(0 - 30);
         robot.liftMotor.setPower(-.1);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+         */
         //Open Claw slowly
-        robot.wrist.setPosition(-0.1);
-        robot.wrist.setPosition(-0.1);
-        robot.wrist.setPosition(-0.1);
+        robot.wrist.setPosition(0.4);
+        sleep(500);
 
         //raise lift arm
-        robot.liftMotor.setTargetPosition(0 + 50);
+        /*robot.liftMotor.setTargetPosition(0 + 50);
         robot.liftMotor.setPower(.1);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+         */
 
+
+        robot.driveTo(270, ROTATE_LEFT);
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
         robot.driveTo(100, BACKWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-        robot.driveTo(550, ROTATE_LEFT); //950 is equal to a 180 degree turn of the robot in rotate turns
+        robot.driveTo(550, ROTATE_RIGHT); //950 is equal to a 180 degree turn of the robot in rotate turns
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-        robot.driveTo(100, FORWARD);
+        robot.driveTo(750, FORWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-        robot.driveTo(550, ROTATE_RIGHT);
+        robot.driveTo(450, ROTATE_LEFT);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-        robot.driveTo(100, FORWARD);
+        robot.driveTo(1500, FORWARD);
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
     }

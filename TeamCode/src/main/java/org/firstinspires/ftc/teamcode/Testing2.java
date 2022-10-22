@@ -56,13 +56,13 @@ public class Testing2 extends  LinearOpMode{
         robot.driveTo(robot.convert(50), FORWARD); //drive backward towards the duck carosel
         while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        robot.leftDrive.setPower(50);
+        robot.leftDrive.setPower(0.5);
         sleep(2000);
         robot.leftDrive.setPower(0);
 
-        robot.claw.setPosition(50);
-        robot.claw.setPosition(40);
-        robot.claw.setPosition(50);
+        robot.claw.setPosition(0.5);
+        robot.claw.setPosition(0.4);
+        robot.claw.setPosition(0.5);
 
     }
 
