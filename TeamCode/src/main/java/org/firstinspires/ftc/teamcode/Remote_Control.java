@@ -22,8 +22,8 @@ public class Remote_Control extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         robot.liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         int i = 0;
@@ -49,7 +49,8 @@ public class Remote_Control extends LinearOpMode {
         // stall motors
         robot.liftMotor.setTargetPosition(LowtargetPos);
         robot.liftMotor.setPower(.5);
-        robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
 
@@ -63,8 +64,8 @@ public class Remote_Control extends LinearOpMode {
             float xAxis = gamepad1.left_stick_x;
             boolean boost = gamepad1.dpad_up;
             boolean slow = gamepad1.dpad_down;
-            boolean lift = gamepad1.y;
-            boolean lower = gamepad1.a;
+            boolean lift = gamepad1.a;
+            boolean lower = gamepad1.y;
             boolean clawClose = gamepad1.b;
             boolean clawOpen = gamepad1.x;
             float wristOut = gamepad1.left_trigger;
@@ -102,8 +103,8 @@ public class Remote_Control extends LinearOpMode {
                 minSpeed = 0;
             }
 
-            leftPower = Range.clip(yAxis + xAxis, -maxSpeed - BOOST + minSpeed, maxSpeed + BOOST - minSpeed);
-            rightPower = Range.clip(yAxis - xAxis, -maxSpeed - BOOST + minSpeed, maxSpeed + BOOST - minSpeed);
+            leftPower = Range.clip(yAxis - xAxis, -maxSpeed - BOOST + minSpeed, maxSpeed + BOOST - minSpeed);
+            rightPower = Range.clip(yAxis + xAxis, -maxSpeed - BOOST + minSpeed, maxSpeed + BOOST - minSpeed);
 
             //joysticks
             robot.leftDrive.setPower(leftPower);
@@ -119,14 +120,13 @@ public class Remote_Control extends LinearOpMode {
                 telemetry.addData("none pressed", robot.liftMotor.getCurrentPosition());
             }
             if (lift == true) {
-                robot.liftMotor.setPower(0.7);
+                robot.liftMotor.setPower(1);
                 telemetry.addData("y pressed", robot.liftMotor.getCurrentPosition());
-                telemetry.update();
             }
             if (lower == true) {
                 robot.liftMotor.setPower(-0.8);
                 telemetry.addData("a pressed", robot.liftMotor.getCurrentPosition());
-                telemetry.update();
+                //lift set to position 20 for the lowest position
             }
 
 

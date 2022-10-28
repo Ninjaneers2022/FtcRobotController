@@ -66,6 +66,13 @@ public class Testing extends  LinearOpMode{
         //robot.claw.setPosition(0.4);
         //robot.claw.setPosition(0.5);
 
+        robot.liftMotor.setPower(1);
+
+        robot.liftMotor.setTargetPosition(100);
+        sleep(2000);
+
+        robot.liftMotor.setTargetPosition(20);
+        sleep(2000);
 
         robot.wrist.setDirection(Servo.Direction.REVERSE);
         robot.wrist.setPosition(0.8);
@@ -80,12 +87,12 @@ public class Testing extends  LinearOpMode{
         sleep(2000);
 
         robot.claw.setPosition(0);
-        telemetry.addData("claw", "0.3");
+        telemetry.addData("claw", "0");
         telemetry.update();
         sleep(2000);
 
         robot.claw.setPosition(1);
-        telemetry.addData("claw", "0.5");
+        telemetry.addData("claw", "1");
         telemetry.update();
         sleep(2000);
 
