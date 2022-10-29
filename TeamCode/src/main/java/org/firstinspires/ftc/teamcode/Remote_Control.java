@@ -43,6 +43,7 @@ public class Remote_Control extends LinearOpMode {
         int MedtargetPos = Originalposlift + ClicksToMed ;
         int LowtargetPos = Originalposlift + ClicksTolow ;
         int GroundtargetPos = Originalposlift + ClicksToGround ;
+        double wristposition = 0.8;
 
 
         robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -80,7 +81,7 @@ public class Remote_Control extends LinearOpMode {
             boolean armDown = gamepad2.b;
 
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
-            double maxSpeed = 0.5;//0.6
+            double maxSpeed = 0.4;//0.6,0.5
             double BOOST = 0;
             double minSpeed = 0;
 
@@ -124,7 +125,7 @@ public class Remote_Control extends LinearOpMode {
                 telemetry.addData("y pressed", robot.liftMotor.getCurrentPosition());
             }
             if (lower == true) {
-                robot.liftMotor.setPower(-0.8);
+                robot.liftMotor.setPower(-1);
                 telemetry.addData("a pressed", robot.liftMotor.getCurrentPosition());
                 //lift set to position 20 for the lowest position
             }
@@ -144,13 +145,16 @@ public class Remote_Control extends LinearOpMode {
                 telemetry.update();
             }
 
+            wristposition = Range.clip(wristposition,0.4,0.8);
             if (wristOut > 0.3) {
+                wristposition -= 0.1;
                 robot.wrist.setDirection(Servo.Direction.REVERSE);
-                robot.wrist.setPosition(0.4);
+                // robot.wrist.setPosition(0.4);
             }
             if (wristIn > 0.3) {
+                wristposition += 0.1 ;
                 robot.wrist.setDirection(Servo.Direction.REVERSE);
-                robot.wrist.setPosition(0.8);
+                //robot.wrist.setPosition(0.8);
             }
             if (wristIn < 0.3 && wristOut < 0.3) {
                 double display = robot.wrist.getPosition();
