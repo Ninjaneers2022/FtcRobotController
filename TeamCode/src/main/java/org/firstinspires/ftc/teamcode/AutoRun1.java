@@ -44,7 +44,7 @@ public class AutoRun1 extends LinearOpMode {
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //robot.liftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 // stall motors
         robot.leftDrive.setTargetPosition(0);
         robot.rightDrive.setTargetPosition(0);
@@ -52,7 +52,7 @@ public class AutoRun1 extends LinearOpMode {
 
         robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //robot.liftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         waitForStart();
         robot.leftDrive.setPower(0.4);
@@ -86,12 +86,11 @@ public class AutoRun1 extends LinearOpMode {
             robot.driveTo(100, FORWARD);
             telemetry.addData("move:" ,"forward 1");
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-            sleep(2000);
-            robot.driveTo(550, ROTATE_LEFT);
+            robot.driveTo(275, ROTATE_LEFT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             telemetry.addData("move:" ,"left");
             //while (robot.inRange(robot.getHeading(),89,5));
-            robot.liftMotor.setTargetPosition(8000);
+            /*robot.liftMotor.setTargetPosition(8000);
             telemetry.addData("move:" ,"up");
             robot.driveTo(600, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
@@ -99,6 +98,8 @@ public class AutoRun1 extends LinearOpMode {
             telemetry.addData("Position", "yellow");
             telemetry.update();
             sleep(20000);
+
+             */
         }
         if (robot.inRange(position, blue, 10)){
             // move forward a tad
