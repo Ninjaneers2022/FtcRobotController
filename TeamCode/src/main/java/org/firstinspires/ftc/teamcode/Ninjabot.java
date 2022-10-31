@@ -256,7 +256,7 @@ public class Ninjabot
         double inchToDegrees = inches / (WheelD * 3.14159 / 360);
         return (int) inchToDegrees;
     }
-    public static boolean inRange(int test, int median, int range){
+    public static boolean inRange(double test, int median, int range){
         boolean answer = false;
         if (test > median - range){
             if (test < median + range){
@@ -270,14 +270,14 @@ public class Ninjabot
     }
 
     public void driveTo(int distance, int dir) {
-        if (dir == FORWARD) {
+        if (dir == BACKWARD) {
             leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - distance);
             rightDrive.setTargetPosition(rightDrive.getCurrentPosition() - distance);
-        }     // to going forward
-        else if (dir == BACKWARD) {
+        }     // to reversing
+        else if (dir == FORWARD) {
             leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + distance);
             rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
-        }   // to reversing
+        }   // to going forward
         else if (dir == ROTATE_LEFT) {
             leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - distance);
             rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);

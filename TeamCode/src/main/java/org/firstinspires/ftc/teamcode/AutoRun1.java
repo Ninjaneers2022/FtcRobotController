@@ -59,30 +59,46 @@ public class AutoRun1 extends LinearOpMode {
         robot.rightDrive.setPower(0.4);
 
 
-        int yellow = 75; // sleeve 2
-        int red = 100; // sleeve 1
+        int yellow = 80; // sleeve 2
+        int red = 105; // sleeve 1
         int blue = 150; // sleeve 3
 
         if (robot.inRange(position, red, 10)){
             // move forward a tad
-            robot.driveTo(50, BACKWARD);
+            robot.driveTo(50, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // turn left 90 degrees
             robot.driveTo(550, ROTATE_LEFT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // move forward one square
-            robot.driveTo(250, BACKWARD);
+            robot.driveTo(250, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // turn 90 degrees right
             robot.driveTo(550, ROTATE_RIGHT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // move forward into the section
-            robot.driveTo(600, BACKWARD);
+            robot.driveTo(1200, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            telemetry.addData("Position", "red");
+            telemetry.update();
         }
         if (robot.inRange(position, yellow, 10)){
-            robot.driveTo(600, BACKWARD);
+            robot.driveTo(100, FORWARD);
+            telemetry.addData("move:" ,"forward 1");
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            sleep(2000);
+            robot.driveTo(550, ROTATE_LEFT);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            telemetry.addData("move:" ,"left");
+            //while (robot.inRange(robot.getHeading(),89,5));
+            robot.liftMotor.setTargetPosition(8000);
+            telemetry.addData("move:" ,"up");
+            robot.driveTo(600, FORWARD);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            telemetry.addData("move:" ,"forward 2");
+            telemetry.addData("Position", "yellow");
+            telemetry.update();
+            sleep(20000);
         }
         if (robot.inRange(position, blue, 10)){
             // move forward a tad
@@ -98,8 +114,10 @@ public class AutoRun1 extends LinearOpMode {
             robot.driveTo(550, ROTATE_LEFT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // move forward into the section
-            robot.driveTo(600, BACKWARD);
+            robot.driveTo(1200, BACKWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            telemetry.addData("Position", "blue");
+            telemetry.update();
         }
 
 
