@@ -49,7 +49,7 @@ public class Remote_Control extends LinearOpMode {
         robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // stall motors
         robot.liftMotor.setTargetPosition(LowtargetPos);
-        robot.liftMotor.setPower(.5);
+        robot.liftMotor.setPower(1);
         //robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -131,37 +131,42 @@ public class Remote_Control extends LinearOpMode {
             }
 
 
+
             if (clawOpen == true) {
 
                 double position = robot.claw.getPosition() - 0.05;
                 robot.claw.setPosition(position);
                 telemetry.addData("claw position open",position);
                 telemetry.update();
+                sleep(200);
+                position = Range.clip(position,0.4,0.8);
             }
             if (clawClose == true) {
                 double position = robot.claw.getPosition() + 0.05;
                 robot.claw.setPosition(position);
                 telemetry.addData("claw position close",position);
                 telemetry.update();
+                sleep(200);
+                position = Range.clip(position,0.4,0.8);
             }
 
             wristposition = Range.clip(wristposition,0.4,0.8);
             if (wristOut > 0.3) {
-                wristposition -= 0.1;
-                robot.wrist.setDirection(Servo.Direction.REVERSE);
-                // robot.wrist.setPosition(0.4);
+                wristposition = robot.wrist.getPosition() - 0.05;
+                robot.wrist.setPosition(wristposition);
+                telemetry.addData("wrist position open",wristposition);
+                telemetry.update();
+                sleep(200);
+                wristposition = Range.clip(wristposition,0.4,0.8);
             }
             if (wristIn > 0.3) {
-                wristposition += 0.1 ;
-                robot.wrist.setDirection(Servo.Direction.REVERSE);
-                //robot.wrist.setPosition(0.8);
+                wristposition = robot.wrist.getPosition() + 0.05;
+                robot.wrist.setPosition(wristposition);
+                telemetry.addData("wrist position open",wristposition);
+                telemetry.update();
+                sleep(200);
+                wristposition = Range.clip(wristposition,0.4,0.8);
             }
-            if (wristIn < 0.3 && wristOut < 0.3) {
-                double display = robot.wrist.getPosition();
-                // telemetry.addData("sevo", display);
-               // telemetry.update();
-            }
-
             if (up) {
                 robot.gyroTurn(50, -90);
             }

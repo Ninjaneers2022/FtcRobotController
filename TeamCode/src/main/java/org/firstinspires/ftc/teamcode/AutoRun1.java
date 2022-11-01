@@ -41,6 +41,7 @@ public class AutoRun1 extends LinearOpMode {
 
         int position = robot.sleeveNumber.ColourAvg();
 
+        //int position = 179;
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -48,6 +49,7 @@ public class AutoRun1 extends LinearOpMode {
 // stall motors
         robot.leftDrive.setTargetPosition(0);
         robot.rightDrive.setTargetPosition(0);
+        robot.liftMotor.setTargetPosition(0);
 // zero out the motors counters
 
         robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -57,65 +59,85 @@ public class AutoRun1 extends LinearOpMode {
         waitForStart();
         robot.leftDrive.setPower(0.4);
         robot.rightDrive.setPower(0.4);
+        robot.liftMotor.setPower(1);
 
-
-        int yellow = 80; // sleeve 2
+        int yellow = 85; // sleeve 2// at home number is 80
         int red = 105; // sleeve 1
-        int blue = 150; // sleeve 3
+        int blue = 175; // sleeve 3 //150 at home
 
-        if (robot.inRange(position, red, 10)){
+
+
+        if (robot.inRange(position, red, 8)){
             // move forward a tad
-            robot.driveTo(50, FORWARD);
+            robot.driveTo(400, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-            // turn left 90 degrees
-            robot.driveTo(550, ROTATE_LEFT);
+            // turn right 90 degrees
+            robot.driveTo(500, ROTATE_LEFT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // move forward one square
-            robot.driveTo(250, FORWARD);
+            robot.driveTo(1000, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-            // turn 90 degrees right
-            robot.driveTo(550, ROTATE_RIGHT);
+            // turn left 90 degrees
+            robot.driveTo(350, ROTATE_RIGHT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // move forward into the section
-            robot.driveTo(1200, FORWARD);
+            robot.driveTo(1500, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             telemetry.addData("Position", "red");
             telemetry.update();
         }
         if (robot.inRange(position, yellow, 10)){
+            robot.liftMotor.setTargetPosition(1000);
+            robot.wrist.setPosition(0.5);
+            while(robot.liftMotor.getCurrentPosition() != 1000){ sleep(200);}
             robot.driveTo(100, FORWARD);
-            telemetry.addData("move:" ,"forward 1");
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            robot.liftMotor.setTargetPosition(7000);
             robot.driveTo(275, ROTATE_LEFT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-            telemetry.addData("move:" ,"left");
-            //while (robot.inRange(robot.getHeading(),89,5));
-            /*robot.liftMotor.setTargetPosition(8000);
-            telemetry.addData("move:" ,"up");
-            robot.driveTo(600, FORWARD);
+            robot.driveTo(400, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-            telemetry.addData("move:" ,"forward 2");
-            telemetry.addData("Position", "yellow");
-            telemetry.update();
-            sleep(20000);
+            while (robot.liftMotor.getCurrentPosition() != 7000) {
+                sleep(200);
+            }
+            robot.driveTo(200, FORWARD);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            robot.liftMotor.setTargetPosition(5500);
+            while (robot.inRange(robot.liftMotor.getCurrentPosition(), 5000, 100)) {
+                sleep(200);
+            }
+            robot.claw.setPosition(clawOpen);
+            while (robot.claw.getPosition()!= clawOpen) {
+                sleep(200);
+            }
+            robot.driveTo(200, BACKWARD);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            robot.driveTo(275, ROTATE_RIGHT);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            robot.driveTo(1500, FORWARD);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-             */
+
+
         }
+
         if (robot.inRange(position, blue, 10)){
             // move forward a tad
-            robot.driveTo(50, BACKWARD);
+            telemetry.addData("new", "code");
+            telemetry.update();
+            robot.driveTo(300, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // turn right 90 degrees
-            robot.driveTo(550, ROTATE_RIGHT);
+            robot.driveTo(500, ROTATE_RIGHT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // move forward one square
-            robot.driveTo(250, BACKWARD);
+            robot.driveTo(2000, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // turn left 90 degrees
-            robot.driveTo(550, ROTATE_LEFT);
+            robot.driveTo(400, ROTATE_LEFT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // move forward into the section
-            robot.driveTo(1200, BACKWARD);
+            robot.driveTo(1700, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             telemetry.addData("Position", "blue");
             telemetry.update();
