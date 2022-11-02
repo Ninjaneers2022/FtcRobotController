@@ -318,4 +318,20 @@ public class Ninjabot
         return degreesToTurn;
     }
 
+    public void liftSetPosition(int level){
+        int liftposition;
+        if (level == 1){
+            liftposition = 6000;
+        }
+        else{
+            liftposition = 8000;
+        }
+        deposit(liftposition);
+    }
+    public void deposit(int liftPosition){
+        liftMotor.setTargetPosition(liftPosition - 1000);
+        claw.setPosition(1);
+        liftMotor.setTargetPosition(liftPosition);
+        driveTo(100, BACKWARD);
+    }
 }
