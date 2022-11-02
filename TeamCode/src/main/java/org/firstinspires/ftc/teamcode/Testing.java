@@ -37,25 +37,43 @@ public class Testing extends  LinearOpMode{
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        double startH = robot.getHeading();
+        telemetry.addData("starting gyro heading", startH);
+        telemetry.update();
+
         waitForStart();
         robot.leftDrive.setPower(0.4);
         robot.rightDrive.setPower(0.4);
-        robot.liftMotor.setPower(1);
 
-        robot.driveTo(500, ROTATE_RIGHT);
-        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
 
-        /*
-        while (robot.getHeading() != 0) {
-            int distance = (int)((robot.getHeading()-0)*0.5);
-            robot.leftDrive.setTargetPosition(robot.leftDrive.getCurrentPosition() + distance);
-            robot.rightDrive.setTargetPosition(robot.rightDrive.getCurrentPosition() - distance);
-            telemetry.addData("gyro heading", robot.getHeading());
+        sleep(1000);
+
+        robot.driveTo(800, ROTATE_LEFT); //turn to 90
+        while (!robot.targetReached() && opModeIsActive()){
+            telemetry.addData("after turn one heading is", robot.getHeading());
+            telemetry.update();
+        }
+        sleep(1000);
+        double HOne = robot.getHeading();
+        sleep(1000);
+
+
+        robot.driveTo(800, ROTATE_RIGHT); //turn to 90
+        while (!robot.targetReached() && opModeIsActive()){
+            telemetry.addData("after turn two heading is", robot.getHeading());
             telemetry.update();
         }
 
-         */
+        sleep(1000);
+        double HTwo = robot.getHeading();
+        sleep(1000);
 
+        double distance = HOne - HTwo;
+        telemetry.addData("1.....", HOne);
+        telemetry.addData("2.....", HTwo);
+        telemetry.addData("3.....", distance);
+        telemetry.update();
+        sleep(100000);
     }
 
 }
