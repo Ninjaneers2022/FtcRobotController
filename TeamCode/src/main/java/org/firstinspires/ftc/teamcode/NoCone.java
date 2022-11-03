@@ -137,7 +137,7 @@ public class NoCone extends LinearOpMode {
         result = startAngle + bearing - finishAngle ;
         telemetry.addData("result",result) ;
         telemetry.update();
-        if ((bearing - robot.getAngle()) >= 0) {
+        if (bearing >= 0) {
             robot.driveTo(intialTurn, ROTATE_LEFT);
             while (!robot.targetReached() && opModeIsActive()) sleep(200);
             for (int i = 0; i < 3; i++) {
