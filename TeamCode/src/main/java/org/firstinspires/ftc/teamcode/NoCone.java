@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 import javax.tools.ForwardingFileObject;
 
 
@@ -17,18 +19,23 @@ import javax.tools.ForwardingFileObject;
 public class NoCone extends LinearOpMode {
     Ninjabot robot;
 
+    private double cAngle ;
+    private double startAngle ;
+    private double finishAngle ;
+    private double result ;
+
+    final int FORWARD = 1;
+    final int BACKWARD = 3;
+    final int ROTATE_LEFT = 5;
+    final int ROTATE_RIGHT = 6;
+    final int TANK_LEFT= 7;
+    final int TANK_RIGHT= 8;
+    final int clawOpen = 1;
 
 
     @Override
     public void runOpMode() {
         robot = new Ninjabot(hardwareMap, this);
-        final int FORWARD = 1;
-        final int BACKWARD = 3;
-        final int ROTATE_LEFT = 5;
-        final int ROTATE_RIGHT = 6;
-        final int TANK_LEFT= 7;
-        final int TANK_RIGHT= 8;
-        final int clawOpen = 1;
 
         //  robot.gyroCalibrate();
 
@@ -73,13 +80,15 @@ public class NoCone extends LinearOpMode {
             robot.driveTo(200, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // turn right 90 degrees
-            robot.driveTo(460, ROTATE_LEFT);
+            gyroMathturn(90);
+            //robot.driveTo(460, ROTATE_LEFT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // move forward one square
             robot.driveTo(1300, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // turn left 90 degrees
-            robot.driveTo(380, ROTATE_RIGHT);
+            gyroMathturn(-90);
+            //robot.driveTo(380, ROTATE_RIGHT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // move forward into the section
             robot.driveTo(1300, FORWARD);
@@ -98,13 +107,15 @@ public class NoCone extends LinearOpMode {
             robot.driveTo(300, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // turn right 90 degrees
-            robot.driveTo(400, ROTATE_RIGHT);
+            gyroMathturn(-90);
+            //robot.driveTo(400, ROTATE_RIGHT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // move forward one square
             robot.driveTo(1000, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // turn left 90 degrees
-            robot.driveTo(380, ROTATE_LEFT);
+            gyroMathturn(90);
+            //robot.driveTo(380, ROTATE_LEFT);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             // move forward into the section
             robot.driveTo(1300, FORWARD);
@@ -114,5 +125,43 @@ public class NoCone extends LinearOpMode {
         }
 
 
+    }
+// positive = left turn, negative = right turn
+    public void gyroMathturn(int bearing){
+        int intialTurn = (int)((460/90)* bearing);
+        startAngle = robot.getAngle() ;
+        telemetry.addData("start",startAngle) ;
+        finishAngle = robot.getAngle() ;
+        finishAngle = Math.abs(finishAngle) ;
+        telemetry.addData("finish",finishAngle) ;
+        result = startAngle + bearing - finishAngle ;
+        telemetry.addData("result",result) ;
+        telemetry.update();
+        if ((bearing - robot.getAngle()) >= 0) {
+            robot.driveTo(intialTurn, ROTATE_LEFT);
+            while (!robot.targetReached() && opModeIsActive()) sleep(200);
+            for (int i = 0; i < 3; i++) {
+                if (startAngle + bearing - finishAngle > 10)
+                    robot.driveTo(50, ROTATE_LEFT);
+                else if (startAngle + bearing - finishAngle > 5)
+                    robot.driveTo(20, ROTATE_LEFT);
+                else if (startAngle + bearing - finishAngle > 3) ;
+                robot.driveTo(10, ROTATE_LEFT);
+                while (!robot.targetReached() && opModeIsActive()) sleep(200);
+            }
+        }
+        else {
+            robot.driveTo(intialTurn, ROTATE_RIGHT);
+            while (!robot.targetReached() && opModeIsActive()) sleep(200);
+            for (int i = 0; i < 3; i++) {
+                if (startAngle + bearing - finishAngle > 10)
+                    robot.driveTo(50, ROTATE_LEFT);
+                else if (startAngle + bearing - finishAngle > 5)
+                    robot.driveTo(20, ROTATE_LEFT);
+                else if (startAngle + bearing - finishAngle > 3) ;
+                robot.driveTo(10, ROTATE_LEFT);
+                while (!robot.targetReached() && opModeIsActive()) sleep(200);
+            }
+        }
     }
 }

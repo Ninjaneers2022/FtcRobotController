@@ -10,19 +10,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Testing extends  LinearOpMode{
     Ninjabot robot;
 
+    final int FORWARD = 1;
+    final int BACKWARD = 3;
+    final int ROTATE_LEFT = 5;
+    final int ROTATE_RIGHT = 6;
+    final int TANK_LEFT= 7;
+    final int TANK_RIGHT= 8;
+    final int clawOpen = 1;
     @Override
     public void runOpMode() {
         robot = new Ninjabot(hardwareMap, this);
-
-        final int FORWARD = 1;
-        final int BACKWARD = 3;
-        final int ROTATE_LEFT = 5;
-        final int ROTATE_RIGHT = 6;
-        final int TANK_LEFT= 7;
-        final int TANK_RIGHT= 8;
-        final int clawOpen = 1;
-
-
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -37,7 +34,38 @@ public class Testing extends  LinearOpMode{
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        double startH = robot.getHeading();
+        waitForStart();
+        robot.leftDrive.setPower(0.4);
+        robot.rightDrive.setPower(0.4);
+        robot.liftMotor.setPower(1);
+
+        //liftSetPosition(1);
+        int liftPosition = 6500;
+        robot.liftMotor.setTargetPosition(liftPosition);
+        while(!robot.inRange(robot.liftMotor.getCurrentPosition(),liftPosition,100) && opModeIsActive()){
+            sleep(200);
+        }
+        robot.driveTo(100,FORWARD);
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+        robot.liftMotor.setTargetPosition(liftPosition - 1000);
+        while(robot.inRange(robot.liftMotor.getCurrentPosition(),(liftPosition - 1000),100) && opModeIsActive()){
+            sleep(200);
+        }
+        robot.claw.setPosition(1);
+        robot.liftMotor.setTargetPosition(liftPosition);
+        while(!robot.inRange(robot.liftMotor.getCurrentPosition(),liftPosition,100) && opModeIsActive()){
+            sleep(200);
+        }
+        robot.driveTo(100, BACKWARD);
+        while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+
+
+
+
+
+
+
+        /*double startH = robot.getHeading();
         telemetry.addData("starting gyro heading", startH);
         telemetry.update();
 
@@ -74,6 +102,36 @@ public class Testing extends  LinearOpMode{
         telemetry.addData("3.....", distance);
         telemetry.update();
         sleep(100000);
-    }
 
+         */
+    }
+    public void liftSetPosition(int level){
+        int liftposition;
+        if (level == 1){
+            liftposition = 6000;
+        }
+        else{
+            liftposition = 8000;
+        }
+        deposit(liftposition);
+    }
+    public void deposit(int liftPosition){
+        robot.liftMotor.setTargetPosition(liftPosition);
+        while(robot.liftMotor.getCurrentPosition() != liftPosition){
+            sleep(200);
+        }
+        //robot.driveTo(100,FORWARD);
+        //while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+        robot.liftMotor.setTargetPosition(liftPosition - 1000);
+        while(robot.liftMotor.getCurrentPosition() != (liftPosition - 1000)){
+            sleep(200);
+        }
+        robot.claw.setPosition(1);
+        robot.liftMotor.setTargetPosition(liftPosition);
+        while(robot.liftMotor.getCurrentPosition() != liftPosition){
+            sleep(200);
+        }
+        robot.driveTo(100, BACKWARD);
+    }
 }
+
