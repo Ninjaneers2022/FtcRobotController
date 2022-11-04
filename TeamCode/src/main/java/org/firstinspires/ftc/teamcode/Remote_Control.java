@@ -50,8 +50,8 @@ public class Remote_Control extends LinearOpMode {
         // stall motors
         robot.liftMotor.setTargetPosition(LowtargetPos);
         robot.liftMotor.setPower(1);
-        //robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
 
@@ -77,8 +77,10 @@ public class Remote_Control extends LinearOpMode {
             boolean right = gamepad1.dpad_right;
 
             //gamepad2 input
-            boolean armUp = gamepad2.y;
-            boolean armDown = gamepad2.b;
+            boolean liftPos1 = gamepad2.dpad_down;
+            boolean liftPos2 = gamepad2.dpad_up;
+            //boolean armUp = gamepad2.y;
+            //boolean armDown = gamepad2.b;
 
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
             double maxSpeed = 0.4;//0.6,0.5
@@ -116,16 +118,23 @@ public class Remote_Control extends LinearOpMode {
             telemetry.update();
 
             //buttons
+            int liftPower = Range.clip(robot.liftMotor.getCurrentPosition(), 0, 9000);
+
             if (lift == false && lower == false) {
                 robot.liftMotor.setPower(0);
                 telemetry.addData("none pressed", robot.liftMotor.getCurrentPosition());
             }
             if (lift == true) {
+                liftPower += 100;
                 robot.liftMotor.setPower(1);
+                robot.liftMotor.setTargetPosition(liftPower);
                 telemetry.addData("y pressed", robot.liftMotor.getCurrentPosition());
             }
             if (lower == true) {
-                robot.liftMotor.setPower(-1);
+
+                liftPower -= 100;
+                robot.liftMotor.setPower(1);
+                robot.liftMotor.setTargetPosition(liftPower);
                 telemetry.addData("a pressed", robot.liftMotor.getCurrentPosition());
                 //lift set to position 20 for the lowest position
             }
@@ -179,12 +188,22 @@ public class Remote_Control extends LinearOpMode {
             if (right) {
                 robot.gyroTurn(50, 180);
             }
-            if (armUp) {
+            if (liftPos1) {
+                robot.liftMotor.setTargetPosition(6500);
+                while (robot.inRange(robot.liftMotor.getCurrentPosition(), 6500, 100));
+            }
+            if (liftPos2) {
+                robot.liftMotor.setTargetPosition(8000);
+                while (robot.inRange(robot.liftMotor.getCurrentPosition(), 8000, 100));
+            }
+            /*if (armUp) {
                 i += 1;
             }
             if (armDown) {
                 i -= 1;
             }
+
+             */
 
 
         }
