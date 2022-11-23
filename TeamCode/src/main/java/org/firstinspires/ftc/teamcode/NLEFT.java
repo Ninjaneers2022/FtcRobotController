@@ -29,13 +29,10 @@ public class NLEFT extends LinearOpMode{
 
         robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        while (!opModeIsActive());
 
         robot.leftDrive.setPower(0.3);
         robot.rightDrive.setPower(0.3);
-        robot.liftMotor.setPower(1);
+
 
         //move befor inizilise here
 
@@ -44,9 +41,35 @@ public class NLEFT extends LinearOpMode{
         //Put moves here
 
         //testing
-        robot.claw.setPosition(0);
-        while (robot.claw.getPosition() != 0){sleep(200);}
         robot.claw.setPosition(1);
-        while (robot.claw.getPosition() != 1){sleep(200);}
+        while (!robot.inRange(robot.claw.getPosition(),1,0.1) && opModeIsActive()){
+            telemetry.addData("claw", "1");
+            telemetry.update();
+        }
+        robot.claw.setPosition(0);
+        while (!robot.inRange(robot.claw.getPosition(),0,0.1) && opModeIsActive()){
+            telemetry.addData("claw", "0");
+            telemetry.update();
+        }
+        robot.claw.setPosition(1);
+        while (!robot.inRange(robot.claw.getPosition(),1,0.1) && opModeIsActive()){
+            telemetry.addData("claw", "1");
+            telemetry.update();
+        }
+        robot.claw.setPosition(0);
+        while (!robot.inRange(robot.claw.getPosition(),0,0.1) && opModeIsActive()){
+            telemetry.addData("claw", "0");
+            telemetry.update();
+        }
+        robot.claw.setPosition(1);
+        while (!robot.inRange(robot.claw.getPosition(),1,0.1) && opModeIsActive()){
+            telemetry.addData("claw", "1");
+            telemetry.update();
+        }
+        robot.claw.setPosition(0);
+        while (!robot.inRange(robot.claw.getPosition(),0,0.1) && opModeIsActive()){
+            telemetry.addData("claw", "0");
+            telemetry.update();
+        }
     }
 }

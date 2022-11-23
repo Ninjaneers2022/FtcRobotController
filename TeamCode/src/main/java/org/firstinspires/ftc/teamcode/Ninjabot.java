@@ -258,7 +258,7 @@ public class Ninjabot
         double inchToDegrees = inches / (WheelD * 3.14159 / 360);
         return (int) inchToDegrees;
     }
-    public static boolean inRange(double test, int median, int range){
+    public static boolean inRange(double test, int median, double range){
         boolean answer = false;
         if (test > median - range){
             if (test < median + range){
