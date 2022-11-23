@@ -33,8 +33,9 @@ public class Ninjabot
 
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
-    public Servo claw           = null;
+    public Servo elbow          = null;
     public Servo wrist          = null;
+    public Servo claw          = null;
     public DcMotor liftMotor    = null;
 
     private Orientation lastAngles = new Orientation();
@@ -95,6 +96,7 @@ public class Ninjabot
         rightDrive = hwMap.get(DcMotor.class, "LD");
         claw = hwMap.get(Servo.class,"claw");
         wrist = hwMap.get(Servo.class, "wrist");
+        elbow = hwMap.get(Servo.class, "elbow");
         liftMotor = hwMap.get(DcMotor.class, "lift");
         //spinner = hwMap.get(DcMotor.class, "spinner");
 

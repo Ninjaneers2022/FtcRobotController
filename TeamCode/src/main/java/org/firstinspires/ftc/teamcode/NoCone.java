@@ -17,6 +17,7 @@ import javax.tools.ForwardingFileObject;
  */
 //@TeleOp
 @Autonomous
+@Disabled
 public class NoCone extends LinearOpMode {
     Ninjabot robot;
 
@@ -74,7 +75,7 @@ public class NoCone extends LinearOpMode {
         int blue = 175; // sleeve 3 //150 at home
 
         //coment out if you are actually using the vision code
-        position = blue;
+        //position = blue;
 
         if (robot.inRange(position, blue, 10)){
             // move forward a tad
@@ -96,10 +97,6 @@ public class NoCone extends LinearOpMode {
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             telemetry.addData("Position", "red");
             telemetry.update();
-        }
-        if (robot.inRange(position, yellow, 10)){
-            robot.driveTo(1500, FORWARD);
-            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
         }
         if (robot.inRange(position, red, 8)){
             // move forward a tad
@@ -123,6 +120,10 @@ public class NoCone extends LinearOpMode {
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
             telemetry.addData("Position", "blue");
             telemetry.update();
+        }
+        if (robot.inRange(position, yellow, 10)){
+            robot.driveTo(1500, FORWARD);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
         }
 
 

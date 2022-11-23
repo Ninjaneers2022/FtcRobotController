@@ -129,6 +129,7 @@ public class SleeveDetermine {
          * Some color constants
          */
         static final Scalar BLUE = new Scalar(0, 0, 255);
+        //static final Scalar RED = new Scalar(255, 0, 0);
 
 
         /*

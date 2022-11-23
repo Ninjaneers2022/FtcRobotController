@@ -3,6 +3,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -14,6 +15,7 @@ import javax.tools.ForwardingFileObject;
  */
 //@TeleOp
 @Autonomous
+@Disabled
 public class AutoRun2 extends LinearOpMode {
     Ninjabot robot;
 
@@ -66,7 +68,7 @@ public class AutoRun2 extends LinearOpMode {
         int blue = 175; // sleeve 3 //150 at home
 
         //coment out if you are actually using the vision code
-        position = blue;
+        //position = blue;
 
         if (robot.inRange(position, blue, 10)){
             // move forward a tad

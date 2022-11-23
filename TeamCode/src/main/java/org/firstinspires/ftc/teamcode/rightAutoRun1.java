@@ -1,11 +1,12 @@
+
+
 package org.firstinspires.ftc.teamcode;
 
-        import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-        import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-        import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-        import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-        import javax.tools.ForwardingFileObject;
+import javax.tools.ForwardingFileObject;
 
 
 /*
@@ -13,8 +14,7 @@ package org.firstinspires.ftc.teamcode;
  */
 //@TeleOp
 @Autonomous
-@Disabled
-public class AutoRun1 extends LinearOpMode {
+public class rightAutoRun1 extends LinearOpMode {
     Ninjabot robot;
 
 
@@ -26,13 +26,15 @@ public class AutoRun1 extends LinearOpMode {
         final int BACKWARD = 3;
         final int ROTATE_LEFT = 5;
         final int ROTATE_RIGHT = 6;
+        final int TANK_LEFT= 7;
+        final int TANK_RIGHT= 8;
         final int clawOpen = 1;
 
         //  robot.gyroCalibrate();
 
         while (!opModeIsActive() && !isStopRequested()) {
             int position = robot.sleeveNumber.ColourAvg();
-            telemetry.addData( "AVG1", position  );
+            telemetry.addData( "AVG1", position  ); telemetry.update();
             telemetry.update();
         }
         // Wait for the game to start
@@ -66,7 +68,7 @@ public class AutoRun1 extends LinearOpMode {
         //coment out if you are actually using the vision code
         //position = blue;
 
-        if (robot.inRange(position, blue, 15)){
+        if (robot.inRange(position, blue, 10)){
             // move forward a tad
             robot.driveTo(200, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
@@ -82,32 +84,10 @@ public class AutoRun1 extends LinearOpMode {
             // move forward into the section
             robot.driveTo(1300, FORWARD);
             while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-            telemetry.addData("Position", "blue");
+            telemetry.addData("Position", "red");
             telemetry.update();
         }
-
-        else if (robot.inRange(position, red, 8)){
-            // move forward a tad
-            telemetry.addData("new", "code");
-            telemetry.update();
-            robot.driveTo(300, FORWARD);
-            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-            // turn right 90 degrees
-            robot.driveTo(400, ROTATE_RIGHT);
-            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-            // move forward one square
-            robot.driveTo(1000, FORWARD);
-            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-            // turn left 90 degrees
-            robot.driveTo(380, ROTATE_LEFT);
-            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-            // move forward into the section
-            robot.driveTo(1300, FORWARD);
-            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
-            telemetry.addData("Position", "blue");
-            telemetry.update();
-        }
-        else {// yellow
+        if (robot.inRange(position, yellow, 10)){
             robot.liftMotor.setTargetPosition(1000);
             robot.wrist.setPosition(0.5);
             while(robot.liftMotor.getCurrentPosition() != 1000){ sleep(200);}
@@ -141,6 +121,29 @@ public class AutoRun1 extends LinearOpMode {
 
 
         }
+
+        if (robot.inRange(position, red, 8)){
+            // move forward a tad
+            telemetry.addData("new", "code");
+            telemetry.update();
+            robot.driveTo(300, FORWARD);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            // turn right 90 degrees
+            robot.driveTo(400, ROTATE_RIGHT);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            // move forward one square
+            robot.driveTo(1000, FORWARD);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            // turn left 90 degrees
+            robot.driveTo(380, ROTATE_LEFT);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            // move forward into the section
+            robot.driveTo(1300, FORWARD);
+            while (!robot.targetReached() && opModeIsActive()) robot.updateWheelTelemetry();
+            telemetry.addData("Position", "blue");
+            telemetry.update();
+        }
+
 
     }
 }

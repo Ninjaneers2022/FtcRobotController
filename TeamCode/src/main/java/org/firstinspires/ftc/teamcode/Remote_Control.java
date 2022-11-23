@@ -43,7 +43,6 @@ public class Remote_Control extends LinearOpMode {
         int MedtargetPos = Originalposlift + ClicksToMed ;
         int LowtargetPos = Originalposlift + ClicksTolow ;
         int GroundtargetPos = Originalposlift + ClicksToGround ;
-        double wristposition = 0.8;
 
 
         robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -54,6 +53,8 @@ public class Remote_Control extends LinearOpMode {
         //robot.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
+
+        double wristposition = robot.wrist.getPosition();
 
 
         while (opModeIsActive()) {
@@ -69,8 +70,8 @@ public class Remote_Control extends LinearOpMode {
             boolean lower = gamepad1.y;
             boolean clawClose = gamepad1.b;
             boolean clawOpen = gamepad1.x;
-            float wristOut = gamepad1.left_trigger;
-            float wristIn = gamepad1.right_trigger;
+            float wristOut = gamepad1.right_trigger;
+            float wristIn = gamepad1.left_trigger;
             boolean up = gamepad1.dpad_up;
             boolean down = gamepad1.dpad_down;
             boolean left = gamepad1.dpad_left;
@@ -118,7 +119,7 @@ public class Remote_Control extends LinearOpMode {
             telemetry.update();
 
             //buttons
-            int liftPower = Range.clip(robot.liftMotor.getCurrentPosition(), 0, 9000);
+            int liftPower = Range.clip(robot.liftMotor.getCurrentPosition(), -11000, 0);
 
             if (lift == false && lower == false) {
                 robot.liftMotor.setPower(0);
@@ -141,22 +142,20 @@ public class Remote_Control extends LinearOpMode {
 
 
 
+            double position = Range.clip(robot.liftMotor.getCurrentPosition(), 0.4, 0.8);
             if (clawOpen == true) {
-
-                double position = robot.claw.getPosition() - 0.05;
+                position = robot.claw.getPosition() - 0.05;
                 robot.claw.setPosition(position);
                 telemetry.addData("claw position open",position);
                 telemetry.update();
                 sleep(200);
-                position = Range.clip(position,0.4,0.8);
             }
             if (clawClose == true) {
-                double position = robot.claw.getPosition() + 0.05;
+                position = robot.claw.getPosition() + 0.05;
                 robot.claw.setPosition(position);
                 telemetry.addData("claw position close",position);
                 telemetry.update();
                 sleep(200);
-                position = Range.clip(position,0.4,0.8);
             }
 
             wristposition = Range.clip(wristposition,0.4,0.8);
