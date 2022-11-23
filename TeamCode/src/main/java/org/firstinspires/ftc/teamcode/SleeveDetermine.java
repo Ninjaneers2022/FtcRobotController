@@ -129,15 +129,21 @@ public class SleeveDetermine {
          * Some color constants
          */
         static final Scalar BLUE = new Scalar(0, 0, 255);
+        //static final Scalar RED = new Scalar(255, 0, 0);
 
 
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(109, 98);
+        //static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(109, 98);
 
-        static final int REGION_WIDTH = 80;
-        static final int REGION_HEIGHT = 80;
+        //static final int REGION_WIDTH = 80;
+        //static final int REGION_HEIGHT = 80;
+
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(149, 98);
+
+        static final int REGION_WIDTH = 20;
+        static final int REGION_HEIGHT = 15;
 
         /*
          * Points which actually define the sample region rectangles, derived from above values

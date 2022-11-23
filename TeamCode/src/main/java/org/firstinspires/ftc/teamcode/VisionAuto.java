@@ -22,6 +22,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.opencv.core.Core;
@@ -41,6 +42,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
  */
 //@TeleOp
 @Autonomous
+@Disabled
 public class VisionAuto extends LinearOpMode {
     Ninjabot robot;
     OpenCvInternalCamera phoneCam;

@@ -33,8 +33,9 @@ public class Ninjabot
 
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
-    public Servo claw           = null;
+    public Servo elbow          = null;
     public Servo wrist          = null;
+    public Servo claw          = null;
     public DcMotor liftMotor    = null;
 
     private Orientation lastAngles = new Orientation();
@@ -95,15 +96,9 @@ public class Ninjabot
         rightDrive = hwMap.get(DcMotor.class, "LD");
         claw = hwMap.get(Servo.class,"claw");
         wrist = hwMap.get(Servo.class, "wrist");
+        elbow = hwMap.get(Servo.class, "elbow");
         liftMotor = hwMap.get(DcMotor.class, "lift");
         //spinner = hwMap.get(DcMotor.class, "spinner");
-
-        // needed for color detection code
-        int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-
-
-        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -118,8 +113,8 @@ public class Ninjabot
         gyro.initialize(parameters);
 
 
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
-        leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        leftDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        rightDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
 
         gyroLastAngle = new Orientation();
         //gyroGlobalAngle = 0.0;
@@ -263,16 +258,28 @@ public class Ninjabot
         double inchToDegrees = inches / (WheelD * 3.14159 / 360);
         return (int) inchToDegrees;
     }
+    public static boolean inRange(double test, int median, double range){
+        boolean answer = false;
+        if (test > median - range){
+            if (test < median + range){
+                answer = true;
+            }
+        }
+        else{
+            answer = false;
+        }
+        return answer;
+    }
 
     public void driveTo(int distance, int dir) {
-        if (dir == FORWARD) {
+        if (dir == BACKWARD) {
             leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - distance);
             rightDrive.setTargetPosition(rightDrive.getCurrentPosition() - distance);
-        }     // to going forward
-        else if (dir == BACKWARD) {
+        }     // to reversing
+        else if (dir == FORWARD) {
             leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + distance);
             rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
-        }   // to reversing
+        }   // to going forward
         else if (dir == ROTATE_LEFT) {
             leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - distance);
             rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + distance);
@@ -312,5 +319,4 @@ public class Ninjabot
 
         return degreesToTurn;
     }
-
 }

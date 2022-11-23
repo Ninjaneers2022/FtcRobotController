@@ -22,8 +22,8 @@ public class Remote_Control extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         robot.liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         int i = 0;
@@ -48,10 +48,13 @@ public class Remote_Control extends LinearOpMode {
         robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // stall motors
         robot.liftMotor.setTargetPosition(LowtargetPos);
-        robot.liftMotor.setPower(.5);
+        robot.liftMotor.setPower(1);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //robot.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
+
+        double wristposition = robot.wrist.getPosition();
 
 
         while (opModeIsActive()) {
@@ -63,23 +66,25 @@ public class Remote_Control extends LinearOpMode {
             float xAxis = gamepad1.left_stick_x;
             boolean boost = gamepad1.dpad_up;
             boolean slow = gamepad1.dpad_down;
-            boolean lift = gamepad1.y;
-            boolean lower = gamepad1.a;
+            boolean lift = gamepad1.a;
+            boolean lower = gamepad1.y;
             boolean clawClose = gamepad1.b;
             boolean clawOpen = gamepad1.x;
-            float wristOut = gamepad1.left_trigger;
-            float wristIn = gamepad1.right_trigger;
+            float wristOut = gamepad1.right_trigger;
+            float wristIn = gamepad1.left_trigger;
             boolean up = gamepad1.dpad_up;
             boolean down = gamepad1.dpad_down;
             boolean left = gamepad1.dpad_left;
             boolean right = gamepad1.dpad_right;
 
             //gamepad2 input
-            boolean armUp = gamepad2.y;
-            boolean armDown = gamepad2.b;
+            boolean liftPos1 = gamepad2.dpad_down;
+            boolean liftPos2 = gamepad2.dpad_up;
+            //boolean armUp = gamepad2.y;
+            //boolean armDown = gamepad2.b;
 
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
-            double maxSpeed = 0.5;//0.6
+            double maxSpeed = 0.4;//0.6,0.5
             double BOOST = 0;
             double minSpeed = 0;
 
@@ -102,8 +107,8 @@ public class Remote_Control extends LinearOpMode {
                 minSpeed = 0;
             }
 
-            leftPower = Range.clip(yAxis + xAxis, -maxSpeed - BOOST + minSpeed, maxSpeed + BOOST - minSpeed);
-            rightPower = Range.clip(yAxis - xAxis, -maxSpeed - BOOST + minSpeed, maxSpeed + BOOST - minSpeed);
+            leftPower = Range.clip(yAxis - xAxis, -maxSpeed - BOOST + minSpeed, maxSpeed + BOOST - minSpeed);
+            rightPower = Range.clip(yAxis + xAxis, -maxSpeed - BOOST + minSpeed, maxSpeed + BOOST - minSpeed);
 
             //joysticks
             robot.leftDrive.setPower(leftPower);
@@ -114,43 +119,62 @@ public class Remote_Control extends LinearOpMode {
             telemetry.update();
 
             //buttons
+            int liftPower = Range.clip(robot.liftMotor.getCurrentPosition(), -11000, 0);
+
             if (lift == false && lower == false) {
                 robot.liftMotor.setPower(0);
                 telemetry.addData("none pressed", robot.liftMotor.getCurrentPosition());
             }
             if (lift == true) {
-                robot.liftMotor.setPower(0.7);
+                liftPower += 100;
+                robot.liftMotor.setPower(1);
+                robot.liftMotor.setTargetPosition(liftPower);
                 telemetry.addData("y pressed", robot.liftMotor.getCurrentPosition());
-                telemetry.update();
             }
             if (lower == true) {
-                robot.liftMotor.setPower(-0.8);
+
+                liftPower -= 100;
+                robot.liftMotor.setPower(1);
+                robot.liftMotor.setTargetPosition(liftPower);
                 telemetry.addData("a pressed", robot.liftMotor.getCurrentPosition());
-                telemetry.update();
+                //lift set to position 20 for the lowest position
             }
 
 
+
+            double position = Range.clip(robot.liftMotor.getCurrentPosition(), 0.4, 0.8);
             if (clawOpen == true) {
-                robot.claw.setPosition(30);//40, 25, 30
+                position = robot.claw.getPosition() - 0.05;
+                robot.claw.setPosition(position);
+                telemetry.addData("claw position open",position);
+                telemetry.update();
+                sleep(200);
             }
             if (clawClose == true) {
-                robot.claw.setPosition(40);
+                position = robot.claw.getPosition() + 0.05;
+                robot.claw.setPosition(position);
+                telemetry.addData("claw position close",position);
+                telemetry.update();
+                sleep(200);
             }
 
+            wristposition = Range.clip(wristposition,0.4,0.8);
             if (wristOut > 0.3) {
-                robot.wrist.setDirection(Servo.Direction.REVERSE);
-                robot.wrist.setPosition(0.4);
+                wristposition = robot.wrist.getPosition() - 0.05;
+                robot.wrist.setPosition(wristposition);
+                telemetry.addData("wrist position open",wristposition);
+                telemetry.update();
+                sleep(200);
+                wristposition = Range.clip(wristposition,0.4,0.8);
             }
             if (wristIn > 0.3) {
-                robot.wrist.setDirection(Servo.Direction.REVERSE);
-                robot.wrist.setPosition(0.8);
+                wristposition = robot.wrist.getPosition() + 0.05;
+                robot.wrist.setPosition(wristposition);
+                telemetry.addData("wrist position open",wristposition);
+                telemetry.update();
+                sleep(200);
+                wristposition = Range.clip(wristposition,0.4,0.8);
             }
-            if (wristIn < 0.3 && wristOut < 0.3) {
-                double display = robot.wrist.getPosition();
-                // telemetry.addData("sevo", display);
-               // telemetry.update();
-            }
-
             if (up) {
                 robot.gyroTurn(50, -90);
             }
@@ -163,12 +187,22 @@ public class Remote_Control extends LinearOpMode {
             if (right) {
                 robot.gyroTurn(50, 180);
             }
-            if (armUp) {
+            if (liftPos1) {
+                robot.liftMotor.setTargetPosition(6500);
+                while (robot.inRange(robot.liftMotor.getCurrentPosition(), 6500, 100));
+            }
+            if (liftPos2) {
+                robot.liftMotor.setTargetPosition(8000);
+                while (robot.inRange(robot.liftMotor.getCurrentPosition(), 8000, 100));
+            }
+            /*if (armUp) {
                 i += 1;
             }
             if (armDown) {
                 i -= 1;
             }
+
+             */
 
 
         }

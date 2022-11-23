@@ -22,6 +22,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
@@ -30,6 +31,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  */
 //@TeleOp
 @Autonomous
+@Disabled
 public class AutoSignal extends LinearOpMode {
     Ninjabot robot;
    
