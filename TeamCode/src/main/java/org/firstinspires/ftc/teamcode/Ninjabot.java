@@ -33,7 +33,8 @@ public class Ninjabot
 
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
-    public Servo elbow          = null;
+    public Servo rightElbow          = null;
+    public Servo leftElbow          = null;
     public Servo wrist          = null;
     public Servo claw          = null;
     public DcMotor liftMotor    = null;
@@ -96,7 +97,8 @@ public class Ninjabot
         rightDrive = hwMap.get(DcMotor.class, "LD");
         claw = hwMap.get(Servo.class,"claw");
         wrist = hwMap.get(Servo.class, "wrist");
-        elbow = hwMap.get(Servo.class, "elbow");
+        rightElbow = hwMap.get(Servo.class, "Relbow");
+        leftElbow = hwMap.get(Servo.class, "Lelbow");
         liftMotor = hwMap.get(DcMotor.class, "lift");
         //spinner = hwMap.get(DcMotor.class, "spinner");
 
@@ -258,7 +260,8 @@ public class Ninjabot
         double inchToDegrees = inches / (WheelD * 3.14159 / 360);
         return (int) inchToDegrees;
     }
-    public static boolean inRange(double test, int median, double range){
+
+    public static boolean inRange(double test, double median, double range){
         boolean answer = false;
         if (test > median - range){
             if (test < median + range){
