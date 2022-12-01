@@ -36,6 +36,7 @@ public class Remote_Control extends LinearOpMode {
         robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // stall motors
         robot.liftMotor.setPower(1);
+        robot.liftMotor.setTargetPosition(0);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         //robot.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -67,13 +68,6 @@ public class Remote_Control extends LinearOpMode {
             boolean elbowUp = gamepad1.x;
             boolean elbowDown = gamepad1.b;
 
-
-            //gamepad2 input
-            //boolean liftPos1 = gamepad2.dpad_down;
-            //boolean liftPos2 = gamepad2.dpad_up;
-            //boolean armUp = gamepad2.y;
-            //boolean armDown = gamepad2.b;
-
             //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
             double maxSpeed = 0.4;//0.6,0.5
             double BOOST = 0;
@@ -103,7 +97,7 @@ public class Remote_Control extends LinearOpMode {
 
             clawPosition = Range.clip(robot.claw.getPosition(), 0, 0.25);
             liftPosition = Range.clip(robot.liftMotor.getCurrentPosition(), -11000, 0);
-            wristposition = Range.clip(wristposition,0,1);
+            wristposition = Range.clip(robot.wrist.getPosition(),0,1);
             REPos = Range.clip(robot.rightElbow.getPosition(), 0.25, 1);
             LEPos = Range.clip(robot.leftElbow.getPosition(), 0, 0.75);
 
@@ -113,59 +107,72 @@ public class Remote_Control extends LinearOpMode {
             telemetry.addData("Lift", robot.liftMotor.getCurrentPosition());
             telemetry.addData("Elbow R", robot.rightElbow.getPosition());
             telemetry.addData("Elbow L", robot.leftElbow.getPosition());
+            telemetry.addData("Wrist", robot.wrist.getPosition());
+            telemetry.addData("Claw", clawPosition);
+            telemetry.addData("Math","stats");
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Lift", liftPosition);
+            telemetry.addData("Elbow R", REPos);
+            telemetry.addData("Elbow L", LEPos);
             telemetry.addData("Wrist", wristposition);
             telemetry.addData("Claw", clawPosition);
             telemetry .update();
 
-            robot.claw.setPosition(clawPosition);
-            robot.wrist.setPosition(wristposition);
-            robot.liftMotor.setTargetPosition(liftPosition);
-            //elbow
-            robot.rightElbow.setPosition(REPos);
-            robot.leftElbow.setPosition(LEPos);
-            //joysticks
-            robot.leftDrive.setPower(leftPower);
-            robot.rightDrive.setPower(rightPower);
-
             //buttons
             //lift
-            if (lift == false && lower == false) {
-                robot.liftMotor.setPower(0);
-            }
             if (lift == true) {
                 liftPosition += 100;
                 robot.liftMotor.setPower(1);
-            }
-            if (lower == true) {
+                robot.liftMotor.setTargetPosition(liftPosition);
+                sleep(200);}
+            if (lower == true){
                 liftPosition -= 100;
                 robot.liftMotor.setPower(1);
-            }
+                robot.liftMotor.setTargetPosition(liftPosition);
+                sleep(200);}
 
             //claw
             if (clawOpen > 0.8) {
                 clawPosition -= 0.05;
+                robot.claw.setPosition(clawPosition);
+                sleep(200);
             }
-            if (clawClose > 0.8) {
+            else if (clawClose > 0.8) {
                 clawPosition += 0.05;
+                robot.claw.setPosition(clawPosition);
+                sleep(200);
             }
 
             //wrist is attached to elbow
             if (wristOut) {
                 wristposition += 0.005;
+                robot.wrist.setPosition(wristposition);
+                sleep(200);
             }
-            if (wristIn) {
+            else if (wristIn) {
                 wristposition -= 0.005;
+                robot.wrist.setPosition(wristposition);
+                sleep(200);
             }
 
             //elbow
             if (elbowUp == true) {
                 LEPos -= 0.025;
                 REPos += 0.025;
+                robot.rightElbow.setPosition(REPos);
+                robot.leftElbow.setPosition(LEPos);
+                sleep(200);
             }
-            if (elbowDown == true) {
+            else if (elbowDown == true) {
                 LEPos += 0.025;
-                REPos -= 0.05;
+                REPos -= 0.025;
+                robot.rightElbow.setPosition(REPos);
+                robot.leftElbow.setPosition(LEPos);
+                sleep(200);
             }
+            //joysticks
+            robot.leftDrive.setPower(leftPower);
+            robot.rightDrive.setPower(rightPower);
         }
         }
     }
