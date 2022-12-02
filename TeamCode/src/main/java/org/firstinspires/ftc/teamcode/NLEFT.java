@@ -34,42 +34,21 @@ public class NLEFT extends LinearOpMode{
         robot.rightDrive.setPower(0.3);
 
 
-        //move befor inizilise here
+        //move before inizilise here
 
         waitForStart();
 //set power for all wheels indefinitely
         //Put moves here
 
         //testing
+        robot.claw.setPosition(0.5);
+        while (robot.inRange(robot.claw.getPosition(),0.5,0.1) && opModeIsActive()){
+            sleep(200);
+        }
+        telemetry.addData("done","and done");
         robot.claw.setPosition(1);
-        while (!robot.inRange(robot.claw.getPosition(),1,0.1) && opModeIsActive()){
-            telemetry.addData("claw", "1");
-            telemetry.update();
-        }
-        robot.claw.setPosition(0);
-        while (!robot.inRange(robot.claw.getPosition(),0,0.1) && opModeIsActive()){
-            telemetry.addData("claw", "0");
-            telemetry.update();
-        }
-        robot.claw.setPosition(1);
-        while (!robot.inRange(robot.claw.getPosition(),1,0.1) && opModeIsActive()){
-            telemetry.addData("claw", "1");
-            telemetry.update();
-        }
-        robot.claw.setPosition(0);
-        while (!robot.inRange(robot.claw.getPosition(),0,0.1) && opModeIsActive()){
-            telemetry.addData("claw", "0");
-            telemetry.update();
-        }
-        robot.claw.setPosition(1);
-        while (!robot.inRange(robot.claw.getPosition(),1,0.1) && opModeIsActive()){
-            telemetry.addData("claw", "1");
-            telemetry.update();
-        }
-        robot.claw.setPosition(0);
-        while (!robot.inRange(robot.claw.getPosition(),0,0.1) && opModeIsActive()){
-            telemetry.addData("claw", "0");
-            telemetry.update();
+        while (robot.inRange(robot.claw.getPosition(),1,0.1) && opModeIsActive()){
+            sleep(200);
         }
     }
 }
