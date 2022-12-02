@@ -50,28 +50,29 @@ public class Remote_Control extends LinearOpMode {
         int liftPosition = robot.liftMotor.getCurrentPosition();
 
 
+        //buttons and game pad on remote
+        float yAxis = -gamepad1.left_stick_y;
+        float xAxis = gamepad1.left_stick_x;
+        boolean boost = gamepad1.dpad_up;
+        boolean slow = gamepad1.dpad_down;
+        boolean lift = gamepad1.a;
+        boolean lower = gamepad1.y;
+        float clawClose = gamepad1.right_trigger;
+        float clawOpen = gamepad1.left_trigger;
+        boolean wristOut = gamepad1.right_bumper;
+        boolean wristIn = gamepad1.left_bumper;
+        boolean elbowUp = gamepad1.x;
+        boolean elbowDown = gamepad1.b;
+
+        double leftPower;
+        double rightPower;
+
+        //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
+        double maxSpeed = 0.4;//0.6,0.5
+        double BOOST = 0;
+        double minSpeed = 0;
+
         while (opModeIsActive()) {
-            double leftPower;
-            double rightPower;
-
-            //buttons and game pad on remote
-            float yAxis = -gamepad1.left_stick_y;
-            float xAxis = gamepad1.left_stick_x;
-            boolean boost = gamepad1.dpad_up;
-            boolean slow = gamepad1.dpad_down;
-            boolean lift = gamepad1.a;
-            boolean lower = gamepad1.y;
-            float clawClose = gamepad1.right_trigger;
-            float clawOpen = gamepad1.left_trigger;
-            boolean wristOut = gamepad1.right_bumper;
-            boolean wristIn = gamepad1.left_bumper;
-            boolean elbowUp = gamepad1.x;
-            boolean elbowDown = gamepad1.b;
-
-            //double angle = yAxis/xAxis; double medSpeed = 0.2679; double lowSpeed = 0.0875;
-            double maxSpeed = 0.4;//0.6,0.5
-            double BOOST = 0;
-            double minSpeed = 0;
 
 
             double upPower = Range.clip(gamepad1.left_trigger, -maxSpeed, maxSpeed);
@@ -103,19 +104,18 @@ public class Remote_Control extends LinearOpMode {
 
             // telemetry
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-            telemetry.addData("Lift", robot.liftMotor.getCurrentPosition());
-            telemetry.addData("Elbow R", robot.rightElbow.getPosition());
-            telemetry.addData("Elbow L", robot.leftElbow.getPosition());
-            telemetry.addData("Wrist", robot.wrist.getPosition());
-            telemetry.addData("Claw", clawPosition);
-            telemetry.addData("Math","stats");
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-            telemetry.addData("Lift", liftPosition);
-            telemetry.addData("Elbow R", REPos);
-            telemetry.addData("Elbow L", LEPos);
-            telemetry.addData("Wrist", wristposition);
-            telemetry.addData("Claw", clawPosition);
+            telemetry.addData("Motors     ", "left (%.2f), right (%.2f)", robot.leftDrive.getCurrentPosition(), robot.rightDrive.getCurrentPosition());
+            telemetry.addData("Math Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Lift     ", robot.liftMotor.getCurrentPosition());
+            telemetry.addData("Math Lift", liftPosition);
+            telemetry.addData("Elbow R     ", robot.rightElbow.getPosition());
+            telemetry.addData("Math Elbow R", REPos);
+            telemetry.addData("Elbow L     ", robot.leftElbow.getPosition());
+            telemetry.addData("Math Elbow L", LEPos);
+            telemetry.addData("Wrist     ", robot.wrist.getPosition());
+            telemetry.addData("Math Wrist", wristposition);
+            telemetry.addData("Claw     ", robot.claw.getPosition());
+            telemetry.addData("Math Claw", clawPosition);
             telemetry .update();
 
             //buttons
@@ -143,14 +143,13 @@ public class Remote_Control extends LinearOpMode {
                 sleep(200);
             }
 
-            //wrist is attached to elbow
-            if (wristOut) {
-                wristposition += 0.005;
+            if (gamepad2.a == true) {
+                wristposition += 0.1;
                 robot.wrist.setPosition(wristposition);
                 sleep(200);
             }
-            else if (wristIn) {
-                wristposition -= 0.005;
+            if (gamepad2.y == true) {
+                wristposition -= 0.1;
                 robot.wrist.setPosition(wristposition);
                 sleep(200);
             }

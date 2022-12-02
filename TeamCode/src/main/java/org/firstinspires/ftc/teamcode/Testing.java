@@ -31,11 +31,9 @@ public class Testing extends  LinearOpMode{
         robot.rightDrive.setTargetPosition(0);
         robot.liftMotor.setTargetPosition(0);
 // zero out the motors counters
-
         robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         waitForStart();
         robot.leftDrive.setPower(0.4);
         robot.rightDrive.setPower(0.4);

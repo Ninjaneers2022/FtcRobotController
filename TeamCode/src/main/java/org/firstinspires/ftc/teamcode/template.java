@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
 // out of date
-@Disabled
 public class template extends LinearOpMode{
     Ninjabot robot;
 
@@ -45,8 +45,29 @@ public class template extends LinearOpMode{
         robot.leftDrive.setPower(0.3);
         robot.rightDrive.setPower(0.3);
 
+        robot.wrist.setDirection(Servo.Direction.REVERSE);
+
 //set power for all wheels indefinitely
         //Put moves here
-
+        robot.wrist.setPosition(0);
+        while(robot.inRange(robot.wrist.getPosition(),0,0.005) && opModeIsActive()){
+            telemetry.addData("wrist", robot.wrist.getPosition());
+            telemetry.update();
+        }
+        robot.wrist.setPosition(-1);
+        while(robot.inRange(robot.wrist.getPosition(),1,0.005) && opModeIsActive()){
+            telemetry.addData("wrist", robot.wrist.getPosition());
+            telemetry.update();
+        }
+        robot.wrist.setPosition(0);
+        while(robot.inRange(robot.wrist.getPosition(),0,0.005) && opModeIsActive()){
+            telemetry.addData("wrist", robot.wrist.getPosition());
+            telemetry.update();
+        }
+        robot.wrist.setPosition(1);
+        while(robot.inRange(robot.wrist.getPosition(),1,0.005) && opModeIsActive()){
+            telemetry.addData("wrist", robot.wrist.getPosition());
+            telemetry.update();
+        }
     }
 }
