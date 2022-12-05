@@ -27,11 +27,7 @@ public class RRun extends LinearOpMode{
     @Override
     public void runOpMode() {
         robot = new Ninjabot(hardwareMap, this);
-
-        //robot.liftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        waitForStart();
-        //robot.claw.setPosition(0);
+        startAngle = robot.getAngle();
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -41,12 +37,13 @@ public class RRun extends LinearOpMode{
         robot.rightDrive.setTargetPosition(0);
         robot.liftMotor.setTargetPosition(0);
 // zero out the motors counters
-
         robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         while (!opModeIsActive());
+
+        waitForStart();
 
         robot.leftDrive.setPower(0.3);
         robot.rightDrive.setPower(0.3);
@@ -54,7 +51,6 @@ public class RRun extends LinearOpMode{
 
 //set power for all wheels indefinitely
         //Put moves here
-/*
         LeftWheel = RightWheel = 325;
         robot.leftDrive.setTargetPosition(LeftWheel);
         robot.rightDrive.setTargetPosition(RightWheel);
@@ -62,7 +58,7 @@ public class RRun extends LinearOpMode{
             sleep(200);
         }
 
-        gyroMathturn(90);
+        LeftGyroMathturn(-90);
 
         LeftWheel = robot.leftDrive.getCurrentPosition() + 620;
         RightWheel = robot.rightDrive.getCurrentPosition() + 620;
@@ -72,14 +68,10 @@ public class RRun extends LinearOpMode{
             sleep(200);
         }
 
-
- */
-        leftGyroMathturn(-90);
-
-        rightGyroMathturn(90);
+        LeftGyroMathturn(-90);
 
         sleep(2000);
-/*
+
         LeftWheel = robot.leftDrive.getCurrentPosition() + 400;
         RightWheel = robot.rightDrive.getCurrentPosition() + 400;
         robot.leftDrive.setTargetPosition(LeftWheel);
@@ -87,52 +79,48 @@ public class RRun extends LinearOpMode{
         while(robot.leftDrive.getCurrentPosition() != LeftWheel && robot.rightDrive.getCurrentPosition() != RightWheel && opModeIsActive()){
             sleep(200);
         }
-        gyroMathturn(-45);
+        LeftGyroMathturn(-45);
 
 
- */
+
+
+
 
     }
 
-    public void rightGyroMathturn(int bearing){
-        int intialTurn = (int)((460/90)* bearing);
-        startAngle = robot.getAngle();
-        telemetry.addData("start",startAngle);
-        result = (startAngle + bearing) - Math.abs(robot.getAngle());
-        telemetry.addData(" 0ff result",result);
-        telemetry.update();
-        robot.driveTo(intialTurn, ROTATE_RIGHT);
-        while (!robot.targetReached() && opModeIsActive()) sleep(200);
-        for (int i = 0; i < 3; i++) {
-            if (startAngle + bearing - robot.getAngle() > 10)
-                robot.driveTo(50, ROTATE_RIGHT);
-            else if (startAngle + bearing - robot.getAngle() > 5)
-                robot.driveTo(20, ROTATE_RIGHT);
-            else if (startAngle + bearing - robot.getAngle() > 3)
-                robot.driveTo(10, ROTATE_RIGHT);
-            while (!robot.targetReached() && opModeIsActive()) sleep(200);}
-        finishAngle = Math.abs(robot.getAngle());
-        telemetry.update();
+    public int turnMath(int degree){
+        int turn = (int)((460/90)* (degree - robot.getAngle()));
+        return turn;
     }
-    public void leftGyroMathturn(int bearing){
-        int intialTurn = (int)((460/90)* bearing);
-        startAngle = robot.getAngle();
-        telemetry.addData("start",startAngle);
-        result = (startAngle + bearing) - Math.abs(robot.getAngle());
-        telemetry.addData(" 0ff result",result);
-        telemetry.update();
+    public void LeftGyroMathturn(int bearing){
+        int intialTurn = (int)((460/90)* (bearing - robot.getAngle()));
         robot.driveTo(intialTurn, ROTATE_LEFT);
         while (!robot.targetReached() && opModeIsActive()) sleep(200);
+        int test = (int)(bearing - robot.getAngle());
         for (int i = 0; i < 3; i++) {
-            if (startAngle + bearing - robot.getAngle() > 10)
+            if (test > 10)
                 robot.driveTo(50, ROTATE_LEFT);
-            else if (startAngle + bearing - robot.getAngle() > 5)
+            else if (test> 5)
                 robot.driveTo(20, ROTATE_LEFT);
-            else if (startAngle + bearing - robot.getAngle() > 3)
+            else if ( test > 3)
                 robot.driveTo(10, ROTATE_LEFT);
-            while (!robot.targetReached() && opModeIsActive()) sleep(200);}
-        finishAngle = Math.abs(robot.getAngle());
-        telemetry.update();
+            while (!robot.targetReached() && opModeIsActive()) sleep(200);
+        }
+    }
+    public void RightGyroMathturn(int bearing){
+        int intialTurn = (int)((460/90)* (bearing - robot.getAngle()));
+        robot.driveTo(intialTurn, ROTATE_RIGHT);
+        while (!robot.targetReached() && opModeIsActive()) sleep(200);
+        int test = (int)(bearing - robot.getAngle());
+        for (int i = 0; i < 3; i++) {
+            if (test > 10)
+                robot.driveTo(50, ROTATE_RIGHT);
+            else if (test> 5)
+                robot.driveTo(20, ROTATE_RIGHT);
+            else if ( test > 3)
+                robot.driveTo(10, ROTATE_RIGHT);
+            while (!robot.targetReached() && opModeIsActive()) sleep(200);
+        }
     }
 }
 
