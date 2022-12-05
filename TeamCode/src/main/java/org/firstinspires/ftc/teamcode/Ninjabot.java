@@ -25,7 +25,9 @@ import android.graphics.drawable.GradientDrawable;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 public class Ninjabot
@@ -322,4 +324,29 @@ public class Ninjabot
 
         return degreesToTurn;
     }
+
+    public void makeFile() {
+        try {
+            File myObj = new File("Robot.txt");
+            if (myObj.createNewFile()) {
+
+            } else {
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeToFile(String line) {
+        try {
+            FileWriter myWriter = new FileWriter("Robot.txt");
+            myWriter.write(line);
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
 }

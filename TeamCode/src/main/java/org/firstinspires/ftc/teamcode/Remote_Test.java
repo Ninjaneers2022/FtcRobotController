@@ -60,7 +60,7 @@ public class Remote_Test extends LinearOpMode {
             telemetry.addData("Math Wrist", wristposition);
             telemetry.addData("Claw     ", robot.claw.getPosition());
             telemetry.addData("Math Claw", clawPosition);
-            telemetry .update();
+            telemetry.update();
 
             //claw
             if (gamepad2.x) {
