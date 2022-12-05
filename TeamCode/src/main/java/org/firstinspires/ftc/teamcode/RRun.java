@@ -80,12 +80,6 @@ public class RRun extends LinearOpMode{
             sleep(200);
         }
         LeftGyroMathturn(-45);
-
-
-
-
-
-
     }
 
     public int turnMath(int degree){
